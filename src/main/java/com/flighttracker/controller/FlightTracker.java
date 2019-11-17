@@ -1,7 +1,7 @@
 //ec2-3-18-112-162.us-east-2.compute.amazonaws.com
 
 
-package main.java.com.flighttracker.controller;
+package com.flighttracker.controller;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.SocketException;
