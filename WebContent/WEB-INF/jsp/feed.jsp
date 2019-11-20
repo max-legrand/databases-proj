@@ -4,7 +4,7 @@
 ArrayList rs = (ArrayList)request.getAttribute("rs");
 Dictionary row = (Hashtable)rs.get(0);
 String name = (String)row.get("username");
-String admin = (String)row.get("admin");
+String type = (String)row.get("type");
 %>
 <style>
 button{
@@ -15,7 +15,7 @@ button{
 <h1>Hello, <%= name%></h1>
 
 <%
-if (Integer.parseInt(admin) == 1){
+if (type.equals("admin")){
 %>
 
 <a href="./admintools"><button>admin tools</button></a>
