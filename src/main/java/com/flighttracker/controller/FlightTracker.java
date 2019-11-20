@@ -267,7 +267,7 @@ public class FlightTracker {
 
             if (rows > 0){
 
-                if (Integer.parseInt(rs.getString("admin")) == 1){
+                if (rs.getString("type").equals("admin")){
                     Dictionary adminuser = new Hashtable();
                     ResultSetMetaData rsmd = rs.getMetaData();
                     int columnsNumber = rsmd.getColumnCount();
@@ -276,7 +276,7 @@ public class FlightTracker {
                         adminuser.put(rsmd.getColumnName(i), rs.getString(i));
                     }
 
-                    rs = statement.executeQuery("select * from users where admin=0");
+                    rs = statement.executeQuery("select * from users where type='customer' or type='rep'");
                     rs.beforeFirst();
                     ArrayList Rows = new ArrayList();
                     while(rs.next()){
@@ -337,7 +337,7 @@ public class FlightTracker {
 
             if (rows > 0){
 
-                    if (Integer.parseInt(rs.getString("admin")) == 1){
+                    if (rs.getString("type").equals("admin")){
                         Dictionary adminuser = new Hashtable();
                         ResultSetMetaData rsmd = rs.getMetaData();
                         int columnsNumber = rsmd.getColumnCount();
