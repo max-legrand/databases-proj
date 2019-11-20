@@ -247,42 +247,49 @@ public class FlightTracker {
 	}
 	
 
+public boolean isadmin(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+        String connectionURL = geturl();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+        statement = connection.createStatement();
+        rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
+        rs.last();
+        int rows = rs.getRow();
+        rs.first();
+        if (rs.getString("type").equals("admin")){
+            connection.close();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
 @RequestMapping("/admintools")
 	public ModelAndView admintools(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            ResultSet rs = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
-            rs.last();
-            int rows = rs.getRow();
-            rs.first();
-
-            if (rows > 0){
-
-                if (rs.getString("type").equals("admin")){
-                    Dictionary adminuser = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    
-                    for (int i = 1; i <= columnsNumber; i++){
-                        adminuser.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
+            if (isadmin(userid)){
+                    String connectionURL = geturl();
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                    connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                    statement = connection.createStatement();
 
                     rs = statement.executeQuery("select * from users where type='customer' or type='rep'");
                     rs.beforeFirst();
                     ArrayList Rows = new ArrayList();
                     while(rs.next()){
                         Dictionary row = new Hashtable();
-                        rsmd = rs.getMetaData();
-                        columnsNumber = rsmd.getColumnCount();
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int columnsNumber = rsmd.getColumnCount();
                         for (int i = 1; i <= columnsNumber; i++){
                             row.put(rsmd.getColumnName(i), rs.getString(i));
                         }
@@ -290,30 +297,28 @@ public class FlightTracker {
                     }
                     connection.close();
                     ModelAndView model = new ModelAndView("admintools", "rs", Rows);
-                    model.addObject("admin", adminuser);
                     return model;
                 }
                    
                    
                 
-                connection.close();
+
                 
                 ModelAndView model = new ModelAndView("redirect:feed");
 
                 return model;
             }
-            connection.close();
 
-        }
+
+        
         ModelAndView model =  new ModelAndView("index");
 		return model;
 	}
 
 
-
 @RequestMapping("/adminedit")
 	public ModelAndView adminedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        
+        String connectionURL = geturl();
         if (selectedid == null || selectedid.equals("") || selectedid.equals(" ")){
             ModelAndView model =  new ModelAndView("redirect:admintools");
             return model;
@@ -323,31 +328,16 @@ public class FlightTracker {
 
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            ResultSet rs = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
-            rs.last();
-            int rows = rs.getRow();
-            rs.first();
-
-            if (rows > 0){
-
-                    if (rs.getString("type").equals("admin")){
-                        Dictionary adminuser = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        
-                        for (int i = 1; i <= columnsNumber; i++){
-                            adminuser.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
+                if (isadmin(userid)){
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        Connection connection = null;
+                        Statement statement = null;
+                        ResultSet rs = null;
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
                         rs = statement.executeQuery("select * from users where id="+selectedid);
                         rs.last();
-                        rows = rs.getRow();
+                        int rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
                             if (rs.getString("type").equals("admin")){
@@ -358,8 +348,8 @@ public class FlightTracker {
                             ArrayList Rows = new ArrayList();
                        
                             Dictionary row = new Hashtable();
-                            rsmd = rs.getMetaData();
-                            columnsNumber = rsmd.getColumnCount();
+                            ResultSetMetaData rsmd = rs.getMetaData();
+                            int columnsNumber = rsmd.getColumnCount();
                             
                             for (int i = 1; i <= columnsNumber; i++){
                                 row.put(rsmd.getColumnName(i), rs.getString(i));
@@ -367,21 +357,18 @@ public class FlightTracker {
                             Rows.add(row);
                             connection.close();
                             ModelAndView model = new ModelAndView("adminedit", "rs", Rows);
-                            model.addObject("admin", adminuser);
                             return model;
                         }
                         
                     }
                    
-                    connection.close();
+                    
                     ModelAndView model =  new ModelAndView("redirect:admintools");
                     return model;
             }
-            connection.close();
 
-        }
+        
         ModelAndView model =  new ModelAndView("index");
-        model.addObject("conn", geturl());
 		return model;
 	}
 	
