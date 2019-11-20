@@ -273,17 +273,19 @@ public class FlightTracker {
             if (rows > 0){
 
                    
-                    ArrayList Rows = new ArrayList();
-                   
-                    Dictionary row = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    
-                    for (int i = 1; i <= columnsNumber; i++){
-                        row.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
-                    Rows.add(row);
-                    connection.close();
+                ArrayList Rows = new ArrayList();
+                for (int i = 0; i < rows; i++){
+                 Dictionary row = new Hashtable();
+                 ResultSetMetaData rsmd = rs.getMetaData();
+                 int columnsNumber = rsmd.getColumnCount();
+                 
+                 for (i = 1; i <= columnsNumber; i++){
+                     row.put(rsmd.getColumnName(i), rs.getString(i));
+                 }
+                 Rows.add(row);
+                 rs.next();
+                }
+                connection.close();
                     ModelAndView model = new ModelAndView("feed", "rs", Rows);
 
                     return model;
@@ -311,17 +313,19 @@ public class FlightTracker {
             rs.first();
 
             if (rows > 0){
-                   
                     ArrayList Rows = new ArrayList();
-                   
+                   for (int i = 0; i < rows; i++){
                     Dictionary row = new Hashtable();
                     ResultSetMetaData rsmd = rs.getMetaData();
                     int columnsNumber = rsmd.getColumnCount();
                     
-                    for (int i = 1; i <= columnsNumber; i++){
+                    for (i = 1; i <= columnsNumber; i++){
                         row.put(rsmd.getColumnName(i), rs.getString(i));
                     }
                     Rows.add(row);
+                    rs.next();
+                   }
+                   
                     connection.close();
                     ModelAndView model = new ModelAndView("feed", "rs", Rows);
 
@@ -336,4 +340,261 @@ public class FlightTracker {
 		return model;
 	}
 	
+
+@RequestMapping("/admintools")
+	public ModelAndView admintools(HttpSession session, @CookieValue(required=false, name = "id") String id,@CookieValue(required=false, name = "uuid") String uuid, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+            String connectionURL = geturl();
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
+            rs.last();
+            int rows = rs.getRow();
+            rs.first();
+
+            if (rows > 0){
+
+                if (Integer.parseInt(rs.getString("admin")) == 1){
+                    Dictionary adminuser = new Hashtable();
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columnsNumber = rsmd.getColumnCount();
+                    
+                    for (int i = 1; i <= columnsNumber; i++){
+                        adminuser.put(rsmd.getColumnName(i), rs.getString(i));
+                    }
+
+                    rs = statement.executeQuery("select * from users where admin=0");
+                    rs.beforeFirst();
+                    ArrayList Rows = new ArrayList();
+                    while(rs.next()){
+                        Dictionary row = new Hashtable();
+                        rsmd = rs.getMetaData();
+                        columnsNumber = rsmd.getColumnCount();
+                        for (int i = 1; i <= columnsNumber; i++){
+                            row.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        Rows.add(row);
+                    }
+                    connection.close();
+                    ModelAndView model = new ModelAndView("admintools", "rs", Rows);
+                    model.addObject("admin", adminuser);
+                    return model;
+                }
+                   
+                   
+                
+                connection.close();
+                
+                ModelAndView model = new ModelAndView("redirect:feed");
+
+                return model;
+            }
+            connection.close();
+
+        }
+        else if (id != null){
+            Cookie cookie = new Cookie("id", id);
+            cookie.setMaxAge(60*60*24*365*10);
+            response.addCookie(cookie);
+            Cookie cookie2 = new Cookie("uuid", uuid);
+            cookie2.setMaxAge(60*60*24*365*10);
+            response.addCookie(cookie2);
+            String connectionURL = geturl();
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            rs = statement.executeQuery("select * from sessions join users on users.id=userid where sessionid=\""+id+"\" and uniqueid=\""+uuid+"\"");
+            rs.last();
+            int rows = rs.getRow();
+            rs.first();
+
+            if (rows > 0){
+                    if (Integer.parseInt(rs.getString("admin")) == 1){
+                        Dictionary adminuser = new Hashtable();
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int columnsNumber = rsmd.getColumnCount();
+                        
+                        for (int i = 1; i <= columnsNumber; i++){
+                            adminuser.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        rs = statement.executeQuery("select * from users where admin=0");
+                        rs.beforeFirst();
+                        ArrayList Rows = new ArrayList();
+                        while(rs.next()){
+                            Dictionary row = new Hashtable();
+                            rsmd = rs.getMetaData();
+                            columnsNumber = rsmd.getColumnCount();
+                         
+                            for (int i = 1; i <= columnsNumber; i++){
+                                row.put(rsmd.getColumnName(i), rs.getString(i));
+                            }
+                            Rows.add(row);
+                        }
+                        connection.close();
+                        ModelAndView model = new ModelAndView("admintools", "rs", Rows);
+                        model.addObject("admin", adminuser);
+                        return model;
+                    }
+
+                    connection.close();
+                    ModelAndView model = new ModelAndView("redirect:feed");
+                    return model;
+            }
+            connection.close();
+
+
+        }
+        ModelAndView model =  new ModelAndView("index");
+		return model;
+	}
+
+
+
+@RequestMapping("/adminedit")
+	public ModelAndView adminedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, @CookieValue(required=false, name = "id") String id,@CookieValue(required=false, name = "uuid") String uuid, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        
+        if (selectedid == null || selectedid.equals("") || selectedid.equals(" ")){
+            ModelAndView model =  new ModelAndView("redirect:admintools");
+            return model;
+        }
+
+
+
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+            String connectionURL = geturl();
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
+            rs.last();
+            int rows = rs.getRow();
+            rs.first();
+
+            if (rows > 0){
+
+                    if (Integer.parseInt(rs.getString("admin")) == 1){
+                        Dictionary adminuser = new Hashtable();
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int columnsNumber = rsmd.getColumnCount();
+                        
+                        for (int i = 1; i <= columnsNumber; i++){
+                            adminuser.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        rs = statement.executeQuery("select * from users where id="+selectedid);
+                        rs.last();
+                        rows = rs.getRow();
+                        rs.first();
+                        if (rows > 0){
+                            if (rs.getString("admin").equals("1")){
+                                ModelAndView model =  new ModelAndView("redirect:admintools");
+                                connection.close();
+                                return model;
+                            }
+                            ArrayList Rows = new ArrayList();
+                       
+                            Dictionary row = new Hashtable();
+                            rsmd = rs.getMetaData();
+                            columnsNumber = rsmd.getColumnCount();
+                            
+                            for (int i = 1; i <= columnsNumber; i++){
+                                row.put(rsmd.getColumnName(i), rs.getString(i));
+                            }
+                            Rows.add(row);
+                            connection.close();
+                            ModelAndView model = new ModelAndView("adminedit", "rs", Rows);
+                            model.addObject("admin", adminuser);
+                            return model;
+                        }
+                        
+                    }
+                   
+                    connection.close();
+                    ModelAndView model =  new ModelAndView("redirect:admintools");
+                    return model;
+            }
+            connection.close();
+
+        }
+        else if (id != null){
+            Cookie cookie = new Cookie("id", id);
+            cookie.setMaxAge(60*60*24*365*10);
+            response.addCookie(cookie);
+            Cookie cookie2 = new Cookie("uuid", uuid);
+            cookie2.setMaxAge(60*60*24*365*10);
+            response.addCookie(cookie2);
+            String connectionURL = geturl();
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            rs = statement.executeQuery("select * from sessions join users on users.id=userid where sessionid=\""+id+"\" and uniqueid=\""+uuid+"\"");
+            rs.last();
+            int rows = rs.getRow();
+            rs.first();
+
+            if (rows > 0){
+                if (Integer.parseInt(rs.getString("admin")) == 1){
+                    Dictionary adminuser = new Hashtable();
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columnsNumber = rsmd.getColumnCount();
+                    
+                    for (int i = 1; i <= columnsNumber; i++){
+                        adminuser.put(rsmd.getColumnName(i), rs.getString(i));
+                    }
+                    rs = statement.executeQuery("select * from users where id="+selectedid);
+                    rs.last();
+                    rows = rs.getRow();
+                    rs.first();
+                    if (rows>0){
+                        if (rs.getString("admin").equals("1")){
+                            ModelAndView model =  new ModelAndView("redirect:admintools");
+                            connection.close();
+                            return model;
+                        }
+                        ArrayList Rows = new ArrayList();
+                
+                        Dictionary row = new Hashtable();
+                        rsmd = rs.getMetaData();
+                        columnsNumber = rsmd.getColumnCount();
+                        
+                        for (int i = 1; i <= columnsNumber; i++){
+                            row.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        Rows.add(row);
+                        connection.close();
+                        ModelAndView model = new ModelAndView("adminedit", "rs", Rows);
+                        model.addObject("admin", adminuser);
+                        return model;
+                    }
+                }
+                connection.close();
+                ModelAndView model =  new ModelAndView("redirect:admintools");
+                return model;
+            }
+            connection.close();
+
+
+        }
+        ModelAndView model =  new ModelAndView("index");
+        model.addObject("conn", geturl());
+		return model;
+	}
+	
 }
+

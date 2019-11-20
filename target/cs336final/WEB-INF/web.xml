@@ -20,6 +20,8 @@
     <url-pattern>/loginconf</url-pattern>
     <url-pattern>/invalidlogin</url-pattern>
     <url-pattern>/logout</url-pattern>
+    <url-pattern>/admintools</url-pattern>
+    <url-pattern>/adminedit*</url-pattern>
 
 
 	</servlet-mapping>
