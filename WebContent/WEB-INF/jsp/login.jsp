@@ -10,8 +10,6 @@
    <br/>
    <input type = "password" name="password" placeholder="password">
    <br/><br/>
-   <input type = "checkbox" name="rememberme" value="TRUE"> Remember Me
-   <br/><br/>
    <input type = "submit" name = "submit">
    </form>
       

@@ -102,7 +102,7 @@ public class FlightTracker {
 
     @RequestMapping("/loginconf")
     public ModelAndView loginconf(HttpSession session, HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("password") String password, @RequestParam("username") String username, @RequestParam(name ="rememberme", defaultValue = "FALSE") String rememberme)
+            @RequestParam("password") String password, @RequestParam("username") String username)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
             NoSuchAlgorithmException, SocketException, UnknownHostException, FileNotFoundException, IOException {
         
@@ -126,45 +126,7 @@ public class FlightTracker {
        }
        else{
             String id = rs.getString("id");
-            if (rememberme.equals("TRUE")){
-                String hashid = generateRandomHexToken(32);
-                rs = statement.executeQuery("SELECT * FROM sessions where sessionid=\""+hashid+"\"");
-                rs.last();
-                int rows = rs.getRow();
-                rs.beforeFirst();
-                while (rows > 0){
-                    hashid = generateRandomHexToken(32);
-                    rs = statement.executeQuery("SELECT * FROM sessions where sessionid=\""+hashid+"\"");
-                    rs.last();
-                    rows = rs.getRow();
-                    rs.beforeFirst();
-                }
-                UUID uuid = UUID.randomUUID();
-                String randomUUIDString = uuid.toString();
-                rs = statement.executeQuery("SELECT * FROM sessions where uniqueid=\""+randomUUIDString+"\"");
-                rs.last();
-                rows = rs.getRow();
-                rs.beforeFirst();
-                while (rows > 0){
-                    uuid = UUID.randomUUID();
-                    randomUUIDString = uuid.toString();
-                    rs = statement.executeQuery("SELECT * FROM sessions where uniqueid=\""+randomUUIDString+"\"");
-                    rs.last();
-                    rows = rs.getRow();
-                    rs.beforeFirst();
-                }
-                statement.executeUpdate("INSERT into sessions (sessionid, userid, uniqueid) VALUES (\""+hashid+"\", "+id+", \""+randomUUIDString+"\")");
-                Cookie cookie = new Cookie("id", hashid);
-                Cookie cookie2 = new Cookie("uuid", randomUUIDString);
-                cookie.setMaxAge(60*60*24*365*10);
-                cookie2.setMaxAge(60*60*24*365*10);
-                response.addCookie(cookie);
-                response.addCookie(cookie2);
-            }
-            else{
                 session.setAttribute("ID", id);
-            }
-            
             model = new ModelAndView("redirect:/");
        }
         connection.close();
@@ -226,22 +188,9 @@ public class FlightTracker {
     
     
     @RequestMapping("/logout")
-	public ModelAndView logout(HttpServletRequest request, HttpSession session, HttpServletResponse response, @CookieValue(name ="id", required=false) String id)
+	public ModelAndView logout(HttpServletRequest request, HttpSession session, HttpServletResponse response)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 
-        if (id != null){
-            Cookie cookie = new Cookie("id", "");
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            statement.executeUpdate("delete from sessions where sessionid=\""+id+"\"");
-            connection.close();
-        }
         if (session.getAttribute("ID")!=null){
             session.removeAttribute("ID");
         }
@@ -253,7 +202,7 @@ public class FlightTracker {
 	
 
 	@RequestMapping("/")
-	public ModelAndView index(HttpSession session, @CookieValue(required=false, name = "id") String id,@CookieValue(required=false, name = "uuid") String uuid, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+	public ModelAndView index(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
@@ -272,7 +221,6 @@ public class FlightTracker {
 
             if (rows > 0){
 
-                   
                 ArrayList Rows = new ArrayList();
                 for (int i = 0; i < rows; i++){
                  Dictionary row = new Hashtable();
@@ -293,48 +241,6 @@ public class FlightTracker {
             connection.close();
 
         }
-        else if (id != null){
-            Cookie cookie = new Cookie("id", id);
-            cookie.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie);
-            Cookie cookie2 = new Cookie("uuid", uuid);
-            cookie2.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie2);
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            ResultSet rs = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            rs = statement.executeQuery("select * from sessions join users on users.id=userid where sessionid=\""+id+"\" and uniqueid=\""+uuid+"\"");
-            rs.last();
-            int rows = rs.getRow();
-            rs.first();
-
-            if (rows > 0){
-                    ArrayList Rows = new ArrayList();
-                   for (int i = 0; i < rows; i++){
-                    Dictionary row = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    
-                    for (i = 1; i <= columnsNumber; i++){
-                        row.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
-                    Rows.add(row);
-                    rs.next();
-                   }
-                   
-                    connection.close();
-                    ModelAndView model = new ModelAndView("feed", "rs", Rows);
-
-                    return model;
-            }
-            connection.close();
-
-
-        }
         ModelAndView model =  new ModelAndView("index");
         model.addObject("conn", geturl());
 		return model;
@@ -342,7 +248,7 @@ public class FlightTracker {
 	
 
 @RequestMapping("/admintools")
-	public ModelAndView admintools(HttpSession session, @CookieValue(required=false, name = "id") String id,@CookieValue(required=false, name = "uuid") String uuid, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+	public ModelAndView admintools(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
@@ -399,61 +305,6 @@ public class FlightTracker {
             connection.close();
 
         }
-        else if (id != null){
-            Cookie cookie = new Cookie("id", id);
-            cookie.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie);
-            Cookie cookie2 = new Cookie("uuid", uuid);
-            cookie2.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie2);
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            ResultSet rs = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            rs = statement.executeQuery("select * from sessions join users on users.id=userid where sessionid=\""+id+"\" and uniqueid=\""+uuid+"\"");
-            rs.last();
-            int rows = rs.getRow();
-            rs.first();
-
-            if (rows > 0){
-                    if (Integer.parseInt(rs.getString("admin")) == 1){
-                        Dictionary adminuser = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        
-                        for (int i = 1; i <= columnsNumber; i++){
-                            adminuser.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        rs = statement.executeQuery("select * from users where admin=0");
-                        rs.beforeFirst();
-                        ArrayList Rows = new ArrayList();
-                        while(rs.next()){
-                            Dictionary row = new Hashtable();
-                            rsmd = rs.getMetaData();
-                            columnsNumber = rsmd.getColumnCount();
-                         
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
-                        }
-                        connection.close();
-                        ModelAndView model = new ModelAndView("admintools", "rs", Rows);
-                        model.addObject("admin", adminuser);
-                        return model;
-                    }
-
-                    connection.close();
-                    ModelAndView model = new ModelAndView("redirect:feed");
-                    return model;
-            }
-            connection.close();
-
-
-        }
         ModelAndView model =  new ModelAndView("index");
 		return model;
 	}
@@ -461,7 +312,7 @@ public class FlightTracker {
 
 
 @RequestMapping("/adminedit")
-	public ModelAndView adminedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, @CookieValue(required=false, name = "id") String id,@CookieValue(required=false, name = "uuid") String uuid, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+	public ModelAndView adminedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         
         if (selectedid == null || selectedid.equals("") || selectedid.equals(" ")){
             ModelAndView model =  new ModelAndView("redirect:admintools");
@@ -527,68 +378,6 @@ public class FlightTracker {
                     return model;
             }
             connection.close();
-
-        }
-        else if (id != null){
-            Cookie cookie = new Cookie("id", id);
-            cookie.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie);
-            Cookie cookie2 = new Cookie("uuid", uuid);
-            cookie2.setMaxAge(60*60*24*365*10);
-            response.addCookie(cookie2);
-            String connectionURL = geturl();
-            Connection connection = null;
-            Statement statement = null;
-            ResultSet rs = null;
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
-            statement = connection.createStatement();
-            rs = statement.executeQuery("select * from sessions join users on users.id=userid where sessionid=\""+id+"\" and uniqueid=\""+uuid+"\"");
-            rs.last();
-            int rows = rs.getRow();
-            rs.first();
-
-            if (rows > 0){
-                if (Integer.parseInt(rs.getString("admin")) == 1){
-                    Dictionary adminuser = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    
-                    for (int i = 1; i <= columnsNumber; i++){
-                        adminuser.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
-                    rs = statement.executeQuery("select * from users where id="+selectedid);
-                    rs.last();
-                    rows = rs.getRow();
-                    rs.first();
-                    if (rows>0){
-                        if (rs.getString("admin").equals("1")){
-                            ModelAndView model =  new ModelAndView("redirect:admintools");
-                            connection.close();
-                            return model;
-                        }
-                        ArrayList Rows = new ArrayList();
-                
-                        Dictionary row = new Hashtable();
-                        rsmd = rs.getMetaData();
-                        columnsNumber = rsmd.getColumnCount();
-                        
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                        connection.close();
-                        ModelAndView model = new ModelAndView("adminedit", "rs", Rows);
-                        model.addObject("admin", adminuser);
-                        return model;
-                    }
-                }
-                connection.close();
-                ModelAndView model =  new ModelAndView("redirect:admintools");
-                return model;
-            }
-            connection.close();
-
 
         }
         ModelAndView model =  new ModelAndView("index");
