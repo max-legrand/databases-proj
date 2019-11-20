@@ -350,7 +350,7 @@ public class FlightTracker {
                         rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
-                            if (rs.getString("admin").equals("1")){
+                            if (rs.getString("type").equals("admin")){
                                 ModelAndView model =  new ModelAndView("redirect:admintools");
                                 connection.close();
                                 return model;
