@@ -13,7 +13,6 @@
 <select name ="type">
 <option>customer</option>
 <option>rep</option>
-<option>admin</option>
 </select>
 <br/>
 <br/>
