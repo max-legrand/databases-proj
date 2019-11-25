@@ -20,6 +20,7 @@ table, th, td {
 
 <tr>
 <th>username</th>
+<th>type</th>
 <th>edit</th>
 <th>delete</th>
 </tr>
@@ -28,9 +29,12 @@ table, th, td {
 
 for(int i = 0; i < rs.size(); i++) { 
     Dictionary row = (Hashtable)rs.get(i);
-    String name = (String)row.get("username");%>
+    String name = (String)row.get("username");
+    String type = (String)row.get("type");
+    %>
         <tr style='font-size: large;'>
         <td><%= name %></td>
+        <td><%= type %></td>
         <td>
         <a href = "./adminedit?selectedid=<%=row.get("id")%>">edit</a>
         </td>

@@ -411,7 +411,34 @@ public boolean isadmin(String userid) throws SQLException, FileNotFoundException
         
         ModelAndView model =  new ModelAndView("index");
 		return model;
-	}
+    }
+    
+@RequestMapping("/admindelete")
+public ModelAndView admindelete(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isadmin(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                statement.executeUpdate("delete from users where id=\""+delid+"\"");
+                connection.close();
+                ModelAndView model =  new ModelAndView("redirect:/admintools");
+                return model;
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}  
 	
 
 
