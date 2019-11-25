@@ -439,6 +439,55 @@ public ModelAndView admindelete(@RequestParam("deleteid") String delid, HttpSess
     ModelAndView model =  new ModelAndView("index");
     return model;
 }  
+
+@RequestMapping("/admineditconf")
+public ModelAndView admineditconf(
+    @RequestParam("username") String username, @RequestParam("type") String type, @RequestParam("id") String uid,
+    @RequestParam("password") String password, @RequestParam("confpassword") String confpassword, @RequestParam("admin") String admin,
+HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isadmin(userid)){
+                ModelAndView model = null;
+                if (!confpassword.equals(password) || password.equals("") || password == null){
+                    return new ModelAndView("passmatch");
+                }
+                else{
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                    connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                    statement = connection.createStatement();
+        
+                        
+                        if (admin.equals("true")){
+                            model =  new ModelAndView("redirect:admintools");
+                            statement.executeUpdate("UPDATE users set username=\""+username+"\", password=\""+password+"\", type=\""+type+"\" where id="+uid+";");
+                        }
+                        else{
+                            model =  new ModelAndView("redirect:/");
+                        }
+                    
+                    connection.close();
+                }
+                
+                return model;
+
+
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}  
 	
 
 

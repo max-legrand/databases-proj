@@ -16,6 +16,7 @@
     <url-pattern>/login</url-pattern>
     <url-pattern>/invalid</url-pattern>
     <url-pattern>/exists</url-pattern>
+    <url-pattern>/existsadmin</url-pattern>
     <url-pattern>/signupconf</url-pattern>
     <url-pattern>/loginconf</url-pattern>
     <url-pattern>/invalidlogin</url-pattern>
@@ -23,6 +24,7 @@
     <url-pattern>/admintools</url-pattern>
     <url-pattern>/adminedit*</url-pattern>
     <url-pattern>/adminadd</url-pattern>
+    <url-pattern>/passmatch</url-pattern>
 
 
 	</servlet-mapping>
