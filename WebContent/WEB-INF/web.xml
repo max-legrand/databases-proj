@@ -22,6 +22,7 @@
     <url-pattern>/logout</url-pattern>
     <url-pattern>/admintools</url-pattern>
     <url-pattern>/adminedit*</url-pattern>
+    <url-pattern>/adminadd</url-pattern>
 
 
 	</servlet-mapping>

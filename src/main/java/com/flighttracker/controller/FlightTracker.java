@@ -136,7 +136,11 @@ public class FlightTracker {
 
     @RequestMapping("/signupconf")
     public ModelAndView signupconf(@RequestParam("password") String password,
-            @RequestParam("confpassword") String confpassword, @RequestParam("username") String username)
+            @RequestParam("confpassword") String confpassword,
+            @RequestParam("username") String username, 
+            @RequestParam(name="type", defaultValue = "customer") String type,
+            @RequestParam(name="admin", defaultValue = "false") String admin
+            )
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
             NoSuchAlgorithmException, FileNotFoundException, IOException {
         String connectionURL = geturl();
@@ -156,11 +160,21 @@ public class FlightTracker {
             int rows = rs.getRow();
             rs.beforeFirst();
             if (rows > 0){
-                model =  new ModelAndView("redirect:exists");
+                if (admin.equals("true")){
+                    model =  new ModelAndView("redirect:existsadmin");
+                }
+                else{
+                    model =  new ModelAndView("redirect:exists");
+                }
             }
             else{
-                statement.executeUpdate("INSERT into users(username, password) VALUES(\""+username+"\", \""+password+"\");");
-                model =  new ModelAndView("redirect:/");
+                statement.executeUpdate("INSERT into users(username, password, type) VALUES(\""+username+"\", \""+password+"\",\""+type+"\");");
+                if (admin.equals("true")){
+                    model =  new ModelAndView("redirect:admintools");
+                }
+                else{
+                    model =  new ModelAndView("redirect:/");
+                }
             }
             
         }
@@ -171,6 +185,12 @@ public class FlightTracker {
     @RequestMapping("/signup")
 	public ModelAndView signup() {
 		ModelAndView model =  new ModelAndView("signup");
+		return model;
+    }
+
+    @RequestMapping("/existsadmin")
+	public ModelAndView existsadmin() {
+		ModelAndView model =  new ModelAndView("existsadmin");
 		return model;
     }
 
@@ -304,7 +324,7 @@ public boolean isadmin(String userid) throws SQLException, FileNotFoundException
                 
 
                 
-                ModelAndView model = new ModelAndView("redirect:feed");
+                ModelAndView model = new ModelAndView("redirect:/");
 
                 return model;
             }
@@ -372,5 +392,27 @@ public boolean isadmin(String userid) throws SQLException, FileNotFoundException
 		return model;
 	}
 	
-}
 
+@RequestMapping("/adminadd")
+	public ModelAndView adminadd(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isadmin(userid)){
+                        ModelAndView model =  new ModelAndView("adminadd");
+                        return model;
+                }
+                   
+                    
+                    ModelAndView model =  new ModelAndView("redirect:/");
+                    return model;
+            }
+
+        
+        ModelAndView model =  new ModelAndView("index");
+		return model;
+	}
+	
+
+
+}
