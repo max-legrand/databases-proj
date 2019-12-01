@@ -31,6 +31,12 @@
     <url-pattern>/aircraftexists</url-pattern>
     <url-pattern>/aircraftedit</url-pattern>
     <url-pattern>/aircraftdel</url-pattern>
+    <url-pattern>/addairports</url-pattern>
+    <url-pattern>/addairportsconf</url-pattern>
+    <url-pattern>/airportexists</url-pattern>
+    <url-pattern>/airportsedit</url-pattern>
+    <url-pattern>/airportsdel</url-pattern>
+    <url-pattern>/duplicate</url-pattern>
 
 
 	</servlet-mapping>

@@ -56,7 +56,7 @@ table, th, td {
 }
 </style>
 
-<a href="./airportsadd">Add airport</a>
+<a href="./addairports">Add airport</a>
 <br/>
 <br/>
 <table style="width: 25%; ">
