@@ -1,3 +1,7 @@
+<%-- MAX LEGRAND --%>
+<%-- admin tools --%>
+
+
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <h1> Admin Portal </h1>
 <%

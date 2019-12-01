@@ -1,3 +1,6 @@
+<%-- MAX LEGRAND --%>
+<%-- edit AIRCRAFT FORM --%>
+
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 
 

@@ -40,6 +40,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class FlightTracker {
 
+
+    //MAX LEGRAND
+    // gets url from textfile
     public String geturl() throws FileNotFoundException, IOException{
         // String fileName = "data.txt";
         // File file = new File(fileName);
@@ -54,6 +57,9 @@ public class FlightTracker {
         br.close();
         return line;
     }
+
+    //MAX LEGRAND
+    // gets user from textfile
     public String getuser() throws FileNotFoundException, IOException{
         InputStream inputStream = getClass().getClassLoader()
                          .getResourceAsStream("/data.txt");
@@ -66,6 +72,8 @@ public class FlightTracker {
         return line;
     }
 
+    //MAX LEGRAND
+    // gets password from textfile
     public String getpass() throws FileNotFoundException, IOException{
         InputStream inputStream = getClass().getClassLoader()
                          .getResourceAsStream("/data.txt");
@@ -79,6 +87,7 @@ public class FlightTracker {
         return line;
     }
 
+    //not needed for final version of project
     public static String generateRandomHexToken(int byteLength) {
         SecureRandom secureRandom = new SecureRandom();
         byte[] token = new byte[byteLength];
@@ -86,20 +95,24 @@ public class FlightTracker {
         return new BigInteger(1, token).toString(16); // hex encoding
     }
 
-    
+    //MAX LEGRAND
+    // routes to login jsp
     @RequestMapping("/login")
     public ModelAndView login(HttpServletResponse response) {
         ModelAndView model = new ModelAndView("login");
         return model;
     }
 
+    //MAX LEGRAND
+    // routes to invalid login jsp
     @RequestMapping("/invalidlogin")
     public ModelAndView invalidlogin() {
         ModelAndView model = new ModelAndView("invalidlogin");
         return model;
     }
 
-
+    //MAX LEGRAND
+    // login confirmation / logistics
     @RequestMapping("/loginconf")
     public ModelAndView loginconf(HttpSession session, HttpServletRequest request, HttpServletResponse response,
             @RequestParam("password") String password, @RequestParam("username") String username)
@@ -133,7 +146,8 @@ public class FlightTracker {
         return model;
     }
 
-
+    //MAX LEGRAND
+    // signup confirmation / logistics
     @RequestMapping("/signupconf")
     public ModelAndView signupconf(@RequestParam("password") String password,
             @RequestParam("confpassword") String confpassword,
@@ -182,31 +196,40 @@ public class FlightTracker {
 		return model;
     }
     
+    //MAX LEGRAND
+    // routes to signup jsp
     @RequestMapping("/signup")
 	public ModelAndView signup() {
 		ModelAndView model =  new ModelAndView("signup");
 		return model;
     }
 
+    //MAX LEGRAND
+    // routes to existsadmin jsp
     @RequestMapping("/existsadmin")
 	public ModelAndView existsadmin() {
 		ModelAndView model =  new ModelAndView("existsadmin");
 		return model;
     }
 
+    //MAX LEGRAND
+    // routes to invalid jsp
     @RequestMapping("/invalid")
 	public ModelAndView invalid() {
 		ModelAndView model =  new ModelAndView("invalid");
 		return model;
     }
 
+    //MAX LEGRAND
+    // routes to exists jsp
     @RequestMapping("/exists")
 	public ModelAndView exists() {
 		ModelAndView model =  new ModelAndView("exists");
 		return model;
     }
     
-    
+    //MAX LEGRAND
+    // logout confirmation / logistics
     @RequestMapping("/logout")
 	public ModelAndView logout(HttpServletRequest request, HttpSession session, HttpServletResponse response)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
@@ -220,7 +243,8 @@ public class FlightTracker {
 		return model;
     }
 	
-
+    //MAX LEGRAND
+    // root page / login redirect to feed
 	@RequestMapping("/")
 	public ModelAndView index(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 
@@ -266,8 +290,9 @@ public class FlightTracker {
 		return model;
 	}
 	
-
-public boolean isadmin(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+    //MAX LEGRAND
+    // determine if account is admin
+    public boolean isadmin(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
         String connectionURL = geturl();
         Connection connection = null;
         Statement statement = null;
@@ -288,7 +313,9 @@ public boolean isadmin(String userid) throws SQLException, FileNotFoundException
         }
     }
 
-public boolean isrep(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+    //MAX LEGRAND
+    // determine if account is rep
+    public boolean isrep(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
         String connectionURL = geturl();
         Connection connection = null;
         Statement statement = null;
@@ -309,8 +336,9 @@ public boolean isrep(String userid) throws SQLException, FileNotFoundException, 
         }
     }
 
-
-@RequestMapping("/admintools")
+    //MAX LEGRAND
+    // routes to admintools jsp
+    @RequestMapping("/admintools")
 	public ModelAndView admintools(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 
         String userid = (String)session.getAttribute("ID");
@@ -356,8 +384,9 @@ public boolean isrep(String userid) throws SQLException, FileNotFoundException, 
 		return model;
 	}
 
-
-@RequestMapping("/adminedit")
+    //MAX LEGRAND
+    // routes to adminedit jsp
+    @RequestMapping("/adminedit")
 	public ModelAndView adminedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
         if (selectedid == null || selectedid.equals("") || selectedid.equals(" ")){
@@ -413,8 +442,9 @@ public boolean isrep(String userid) throws SQLException, FileNotFoundException, 
 		return model;
 	}
 	
-
-@RequestMapping("/adminadd")
+    //MAX LEGRAND
+    // routes to adminadd jsp
+    @RequestMapping("/adminadd")
 	public ModelAndView adminadd(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
@@ -434,8 +464,10 @@ public boolean isrep(String userid) throws SQLException, FileNotFoundException, 
 		return model;
     }
     
-@RequestMapping("/admindelete")
-public ModelAndView admindelete(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    //MAX LEGRAND
+    // delete user from admin page logistics
+    @RequestMapping("/admindelete")
+    public ModelAndView admindelete(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
     String userid = (String)session.getAttribute("ID");
     if (userid != null){
@@ -461,12 +493,15 @@ public ModelAndView admindelete(@RequestParam("deleteid") String delid, HttpSess
     return model;
 }  
 
-
+//MAX LEGRAND
+// routes to duplicate jsp
 @RequestMapping("/duplicate")
 public ModelAndView duplicate(){
     return new ModelAndView("duplicate");
 }
 
+//MAX LEGRAND
+// admin edit confrimation 
 @RequestMapping("/admineditconf")
 public ModelAndView admineditconf(
     @RequestParam("username") String username, @RequestParam("type") String type, @RequestParam("id") String uid,
@@ -527,7 +562,8 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     return model;
 }  
 	
-
+//MAX LEGRAND
+// routes to rep tools
 @RequestMapping("/reptools")
 	public ModelAndView reptools(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String userid = (String)session.getAttribute("ID");
@@ -603,7 +639,8 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
 		return model;
 	}
 
-
+    //MAX LEGRAND
+    // routes to add aircraft jsp
     @RequestMapping("/addaircraft")
 	public ModelAndView addaircraft(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
@@ -624,6 +661,8 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
 		return model;
     }
 
+    //MAX LEGRAND
+    // add aircraft confirmation / logistics
     @RequestMapping("/addaircraftconf")
     public ModelAndView addaircraftconf(@RequestParam("id") String id,HttpSession session
             )
@@ -671,7 +710,9 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
         return model;       
         
     }
-
+    
+    //MAX LEGRAND
+    // routes to edit aircraft jsp
     @RequestMapping("/aircraftedit")
 	public ModelAndView aircraftedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
@@ -717,11 +758,12 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
 		return model;
     }
     
-
+    //MAX LEGRAND
+    // aircraft edit confirmation / logistics
     @RequestMapping("/aircrafteditconf")
-public ModelAndView aircrafteditconf(
+    public ModelAndView aircrafteditconf(
     @RequestParam("id") String id,@RequestParam("previd") String previd, 
-HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
     String userid = (String)session.getAttribute("ID");
     if (userid != null){
@@ -764,7 +806,9 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     ModelAndView model =  new ModelAndView("index");
     return model;
 }  
-	
+    
+//MAX LEGRAND
+// delete aircraft
 @RequestMapping("/aircraftdel")
 public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
@@ -789,7 +833,8 @@ public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSess
     return model;
 }  
 
-
+//MAX LEGRAND
+// routes to add airport jsp
 @RequestMapping("/addairports")
 	public ModelAndView addairports(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
@@ -809,7 +854,8 @@ public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSess
         ModelAndView model =  new ModelAndView("index");
 		return model;
     }
-
+    //MAX LEGRAND
+    // add airport conf
     @RequestMapping("/addairportsconf")
     public ModelAndView addairportsconf(@RequestParam("id") String id,HttpSession session
             )
@@ -857,7 +903,8 @@ public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSess
         return model;       
         
     }
-
+    //MAX LEGRAND
+    // routes to add airport edit jsp
     @RequestMapping("/airportsedit")
 	public ModelAndView airportsedit(@RequestParam(name="selectedid") String selectedid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
@@ -903,7 +950,8 @@ public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSess
 		return model;
     }
     
-
+    //MAX LEGRAND
+    // edit airports logistics
     @RequestMapping("/airportseditconf")
 public ModelAndView airportseditconf(
     @RequestParam("id") String id,@RequestParam("previd") String previd, 
@@ -949,7 +997,9 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     ModelAndView model =  new ModelAndView("index");
     return model;
 }  
-	
+
+//MAX LEGRAND
+// delete airport
 @RequestMapping("/airportsdel")
 public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
@@ -973,6 +1023,8 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
     ModelAndView model =  new ModelAndView("index");
     return model;
 }  
+
+
 
 
 

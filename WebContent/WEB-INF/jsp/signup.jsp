@@ -1,3 +1,7 @@
+
+<%-- MAX LEGRAND --%>
+<%-- user signup FORM --%>
+
 <html>
    <head>
       <title>Sign Up</title>

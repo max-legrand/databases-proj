@@ -1,3 +1,6 @@
+<%-- MAX LEGRAND --%>
+<%-- ADD AIRCRAFT FORM --%>
+
 <h1>Add an aircraft</h1>
 
 <form action = "./addaircraftconf" method = "POST">
