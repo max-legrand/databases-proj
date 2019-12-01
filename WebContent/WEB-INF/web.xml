@@ -22,9 +22,15 @@
     <url-pattern>/invalidlogin</url-pattern>
     <url-pattern>/logout</url-pattern>
     <url-pattern>/admintools</url-pattern>
-    <url-pattern>/adminedit*</url-pattern>
+    <url-pattern>/adminedit</url-pattern>
     <url-pattern>/adminadd</url-pattern>
     <url-pattern>/passmatch</url-pattern>
+    <url-pattern>/reptools</url-pattern>
+    <url-pattern>/addaircraft</url-pattern>
+    <url-pattern>/addaircraftconf</url-pattern>
+    <url-pattern>/aircraftexists</url-pattern>
+    <url-pattern>/aircraftedit</url-pattern>
+    <url-pattern>/aircraftdel</url-pattern>
 
 
 	</servlet-mapping>

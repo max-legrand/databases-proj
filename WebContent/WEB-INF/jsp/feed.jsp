@@ -21,6 +21,12 @@ if (type.equals("admin")){
 <a href="./admintools"><button>admin tools</button></a>
 <%
 }
+else if (type.equals("rep")){
+%>
+
+<a href="./reptools"><button>rep tools</button></a>
+<%
+}
 %>
 
 <br>
