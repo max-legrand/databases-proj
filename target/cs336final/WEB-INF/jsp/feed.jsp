@@ -29,6 +29,9 @@ else if (type.equals("rep")){
 %>
 
 <a href="./reptools"><button>rep tools</button></a>
+<br/>
+<br/>
+<a href="./represerve"><button>reserve / edit flights</button></a>
 <%
 }
 %>

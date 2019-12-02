@@ -42,6 +42,7 @@
     <url-pattern>/flightsedit</url-pattern>
     <url-pattern>/flightseditconf</url-pattern>
     <url-pattern>/flightsdel</url-pattern>
+    <url-pattern>/represerve</url-pattern>
 
 	</servlet-mapping>
     
