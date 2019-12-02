@@ -1,3 +1,7 @@
+
+<%-- MAX LEGRAND --%>
+<%-- ADD user admin FORM --%>
+
 <h1>Add a user</h1>
 
 <form action = "./signupconf" method = "POST">

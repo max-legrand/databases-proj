@@ -1,3 +1,6 @@
+<%-- MAX LEGRAND --%>
+<%-- edit user admin --%>
+
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 
 

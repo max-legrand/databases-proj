@@ -1,7 +1,7 @@
 //ec2-3-18-112-162.us-east-2.compute.amazonaws.com
 
-
 package com.flighttracker.controller;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.net.SocketException;
@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -1024,8 +1026,77 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
     return model;
 }  
 
+//MAX LEGRAND
+// routes to add flight jsp
+@RequestMapping("/flightsadd")
+	public ModelAndView flightsadd(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isrep(userid)){
+                        ModelAndView model =  new ModelAndView("flightsadd");
+                        return model;
+                }
+                   
+                    
+                    ModelAndView model =  new ModelAndView("redirect:/");
+                    return model;
+            }
 
+        
+        ModelAndView model =  new ModelAndView("index");
+		return model;
+    }
+    //MAX LEGRAND
+    // add flight conf
+    @RequestMapping("/flightsaddconf")
+    public ModelAndView flightsaddconf(@RequestParam("number") String number, @RequestParam("depart") String depart,
+    @RequestParam("arrive") String arrive, @RequestParam("farefirst") int firstclass,
+    @RequestParam("fareecon") int econclass, @RequestParam("type") String type, HttpSession session
+            )
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
+            NoSuchAlgorithmException, FileNotFoundException, IOException {
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isrep(userid)){
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    ModelAndView model;
+                    
+                        Class.forName("com.mysql .jdbc.Driver").newInstance();
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
+                        rs = statement.executeQuery("SELECT * FROM flights where number=\""+number+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:duplicate");
+                        }
+                        else{
+                            statement.executeUpdate("INSERT into flights(number, type, depart_time, arrive_time, fare_first, fare_econ) VALUES(\""+number+"\", \""+type+"\", \""+depart+"\", \""+arrive+"\", "+firstclass+", "+econclass+");");
 
+                            model =  new ModelAndView("redirect:reptools");
+                            
+                        }
+                        
+                    
+                    connection.close();
+                    return model;
+                }
+                    
+                    
+                    ModelAndView model =  new ModelAndView("redirect:/");
+                    return model;
+            }
+
+        
+        ModelAndView model =  new ModelAndView("index");
+        return model;       
+        
+    }
 
 
 }
