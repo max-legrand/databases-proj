@@ -39,7 +39,9 @@
     <url-pattern>/duplicate</url-pattern>
     <url-pattern>/flightsadd</url-pattern>
     <url-pattern>/flightsaddconf</url-pattern>
-
+    <url-pattern>/flightsedit</url-pattern>
+    <url-pattern>/flightseditconf</url-pattern>
+    <url-pattern>/flightsdel</url-pattern>
 
 	</servlet-mapping>
     

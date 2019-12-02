@@ -506,7 +506,7 @@ public ModelAndView duplicate(){
 // admin edit confrimation 
 @RequestMapping("/admineditconf")
 public ModelAndView admineditconf(
-    @RequestParam("username") String username, @RequestParam("type") String type, @RequestParam("id") String uid,
+    @RequestParam("username") String username, @RequestParam("prevusername") String prevusername, @RequestParam("type") String type, @RequestParam("id") String uid,
     @RequestParam("password") String password, @RequestParam("confpassword") String confpassword, @RequestParam("admin") String admin,
 HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
@@ -525,13 +525,25 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                     Class.forName("com.mysql.jdbc.Driver").newInstance();
                     connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                     statement = connection.createStatement();
-                    
-                    rs = statement.executeQuery("SELECT * FROM users where username=\""+username+"\"");
-                    rs.last();
-                    int rows = rs.getRow();
-                    rs.beforeFirst();
-                    if (rows > 0){
-                            model =  new ModelAndView("redirect:duplicate");
+                    if (!prevusername.equals(username)){
+                        rs = statement.executeQuery("SELECT * FROM users where username=\""+username+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:duplicate");
+                        }
+                        else{
+                            
+                            if (admin.equals("true")){
+                                model =  new ModelAndView("redirect:admintools");
+                                statement.executeUpdate("UPDATE users set username=\""+username+"\", password=\""+password+"\", type=\""+type+"\" where id="+uid+";");
+                            }
+                            else{
+                                model =  new ModelAndView("redirect:/");
+                            }
+                            
+                        }
                     }
                     else{
                         if (admin.equals("true")){
@@ -541,9 +553,8 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                         else{
                             model =  new ModelAndView("redirect:/");
                         }
-                    
-                        
                     }
+                    
                         
                         
                     connection.close();
@@ -779,15 +790,21 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                     Class.forName("com.mysql.jdbc.Driver").newInstance();
                     connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                     statement = connection.createStatement();      
-                    rs = statement.executeQuery("SELECT * FROM aircrafts where id=\""+id+"\"");
-                    rs.last();
-                    int rows = rs.getRow();
-                    rs.beforeFirst();
-                    if (rows > 0){
-                            model =  new ModelAndView("redirect:duplicate");
+                    if (!previd.equals(id)){
+                        rs = statement.executeQuery("SELECT * FROM aircrafts where id=\""+id+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:duplicate");
+                        }
+                        else{
+                        
+                            model =  new ModelAndView("redirect:reptools");
+                            statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\" where id=\""+previd+"\";");
+                        }
                     }
                     else{
-                    
                         model =  new ModelAndView("redirect:reptools");
                         statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\" where id=\""+previd+"\";");
                     }
@@ -971,17 +988,26 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                     Class.forName("com.mysql.jdbc.Driver").newInstance();
                     connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                     statement = connection.createStatement();      
-                    rs = statement.executeQuery("SELECT * FROM airports where id=\""+id+"\"");
-                    rs.last();
-                    int rows = rs.getRow();
-                    rs.beforeFirst();
-                    if (rows > 0){
-                            model =  new ModelAndView("redirect:duplicate");
+                    if (!previd.equals(id)){
+                        rs = statement.executeQuery("SELECT * FROM airports where id=\""+id+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:duplicate");
+                        }
+                        else{                  
+                            model =  new ModelAndView("redirect:reptools");
+                            statement.executeUpdate("UPDATE airports set id=\""+id+"\" where id=\""+previd+"\";");
+                        }
                     }
-                    else{                  
+                    else{
+                                    
                         model =  new ModelAndView("redirect:reptools");
                         statement.executeUpdate("UPDATE airports set id=\""+id+"\" where id=\""+previd+"\";");
+                    
                     }
+                    
                     connection.close();
                 
                 
@@ -1047,6 +1073,7 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
         ModelAndView model =  new ModelAndView("index");
 		return model;
     }
+    
     //MAX LEGRAND
     // add flight conf
     @RequestMapping("/flightsaddconf")
@@ -1098,5 +1125,135 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
         
     }
 
+    //MAX LEGRAND
+    // routes to flights edit jsp
+    @RequestMapping("/flightsedit")
+	public ModelAndView flightsedit(@RequestParam(name="selectnum") String selectnum, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        if (selectnum == null || selectnum.equals("") || selectnum.equals(" ")){
+            ModelAndView model =  new ModelAndView("redirect:reptools");
+            return model;
+        }
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isrep(userid)){
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        Connection connection = null;
+                        Statement statement = null;
+                        ResultSet rs = null;
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
+                        rs = statement.executeQuery("select * from flights where number=\""+selectnum+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.first();
+                        if (rows > 0){
+                            ArrayList Rows = new ArrayList();
+                       
+                            Dictionary row = new Hashtable();
+                            ResultSetMetaData rsmd = rs.getMetaData();
+                            int columnsNumber = rsmd.getColumnCount();
+                            
+                            for (int i = 1; i <= columnsNumber; i++){
+                                row.put(rsmd.getColumnName(i), rs.getString(i));
+                            }
+                            Rows.add(row);
+                            connection.close();
+                            ModelAndView model = new ModelAndView("flightsedit", "rs", Rows);
+                            return model;
+                        }
+                        
+                    }
+
+            }
+
+        
+        ModelAndView model =  new ModelAndView("index");
+		return model;
+    }
+
+    @RequestMapping("/flightseditconf")
+public ModelAndView flightseditconf(
+    @RequestParam("number") String number, @RequestParam("prevnumber") String prevnumber, @RequestParam("depart") String depart,
+    @RequestParam("arrive") String arrive, @RequestParam("farefirst") int firstclass,
+    @RequestParam("fareecon") int econclass, @RequestParam("type") String type, HttpSession session
+) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                ModelAndView model = null;
+                
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                    connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                    statement = connection.createStatement();      
+                    if (!prevnumber.equals(number)){
+                        rs = statement.executeQuery("SELECT * FROM flights where number=\""+number+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:duplicate");
+                        }
+                        else{                  
+                            model =  new ModelAndView("redirect:reptools");
+                            statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\" where number=\""+prevnumber+"\";");
+                        }
+                    }
+                   else{
+                                   
+                        model =  new ModelAndView("redirect:reptools");
+                        statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\" where number=\""+prevnumber+"\";");
+                   }
+                    connection.close();
+                
+                
+                return model;
+
+
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}  
+
+    //MAX LEGRAND
+    // delete flights from table
+    @RequestMapping("/flightsdel")
+    public ModelAndView flightsdel(@RequestParam("delnum") String delnum, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                statement.executeUpdate("delete from flights where number=\""+delnum+"\"");
+                connection.close();
+                ModelAndView model =  new ModelAndView("redirect:/reptools");
+                return model;
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}  
 
 }

@@ -132,10 +132,10 @@ for(int i = 0; i < rs.size(); i++) {
         <td><%= row.get("fare_first") %></td>
         <td><%= row.get("fare_econ") %></td>
         <td>
-        <a href = "./airportsedit?selectedid=<%=row.get("id")%>">edit</a>
+        <a href = "./flightsedit?selectnum=<%=row.get("number")%>">edit</a>
         </td>
         <td>
-        <a href = "./airportsdel?deleteid=<%=row.get("id")%>">delete</a>
+        <a href = "./flightsdel?delnum=<%=row.get("number")%>">delete</a>
         </td>
         </tr>
 

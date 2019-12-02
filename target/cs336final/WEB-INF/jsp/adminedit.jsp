@@ -49,5 +49,6 @@ else{
 <br/>
 <input type="hidden" name="admin" value="true">
 <input type="hidden" name="id" value="<%= row.get("id") %>">
+<input type="hidden" name="prevusername" value="<%= row.get("username") %>">
 <input type="submit">
 </form>
