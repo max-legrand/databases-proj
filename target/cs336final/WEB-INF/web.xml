@@ -43,6 +43,13 @@
     <url-pattern>/flightseditconf</url-pattern>
     <url-pattern>/flightsdel</url-pattern>
     <url-pattern>/represerve</url-pattern>
+    <url-pattern>/addres</url-pattern>
+    <url-pattern>/resedit</url-pattern>
+    <url-pattern>/resdel</url-pattern>
+    <url-pattern>/addresconf</url-pattern>
+    <url-pattern>/resexists</url-pattern>
+        <url-pattern>/userdne</url-pattern>
+        <url-pattern>/flightdne</url-pattern>
 
 	</servlet-mapping>
     

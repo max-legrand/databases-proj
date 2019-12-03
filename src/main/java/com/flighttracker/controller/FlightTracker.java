@@ -1256,6 +1256,8 @@ public ModelAndView flightseditconf(
     return model;
 }  
 
+    //MAX LEGRAND
+    // reservations for representatives
 @RequestMapping("/represerve")
 public ModelAndView represerve(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
 String connectionURL = geturl();
@@ -1295,5 +1297,103 @@ if (userid != null){
 ModelAndView model =  new ModelAndView("index");
 return model;
 }  
+
+
+    //MAX LEGRAND
+    // add reservations page
+@RequestMapping("/addres")
+public ModelAndView addres(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                    ModelAndView model =  new ModelAndView("addres");
+                    return model;
+            }
+               
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}
+
+    //MAX LEGRAND
+    // add reservation logic
+    @RequestMapping("/addresconf")
+    public ModelAndView addresconf(@RequestParam("cid") String cid, @RequestParam("flightnum") String flightnum,
+    @RequestParam("firstclass") String firstclass, @RequestParam("economy") String economy,
+    HttpSession session
+            )
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
+            NoSuchAlgorithmException, FileNotFoundException, IOException {
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isrep(userid)){
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    ModelAndView model;
+                    
+                        Class.forName("com.mysql .jdbc.Driver").newInstance();
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
+                        rs = statement.executeQuery("SELECT * FROM users where id="+cid);
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows == 0){
+                                model =  new ModelAndView("redirect:userdne");
+                        }
+                        rs = statement.executeQuery("SELECT * FROM flights where number=\""+flightnum+"\"");
+                        rs.last();
+                        rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows == 0){
+                                model =  new ModelAndView("redirect:flightdne");
+                        }
+
+                        rs = statement.executeQuery("SELECT * FROM reservations where cid="+cid+" and flightnum=\""+flightnum+"\"");
+                        rs.last();
+                        rows = rs.getRow();
+                        rs.beforeFirst();
+                        if (rows > 0){
+                                model =  new ModelAndView("redirect:resexists");
+                        }
+                        else{
+                            statement.executeUpdate("INSERT into reservations(cid, flightnum, num_first_class, num_economy) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", \""+economy+");");
+
+                            model =  new ModelAndView("redirect:represerve");
+                            
+                        }
+                        
+                    
+                    connection.close();
+                    return model;
+                }
+                    
+                    
+                    ModelAndView model =  new ModelAndView("redirect:/");
+                    return model;
+            }
+
+        
+        ModelAndView model =  new ModelAndView("index");
+        return model;       
+        
+    }
+
+
+    // MAX LEGRAND
+    // reservation exists
+    @RequestMapping("/resexists")
+    public ModelAndView resexists(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        ModelAndView model =  new ModelAndView("resexists");
+        return model;
+    }
 
 }
