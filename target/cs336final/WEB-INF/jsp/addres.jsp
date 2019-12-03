@@ -6,7 +6,7 @@
 <input type="text" name="cid" placeholder="customer id">
 <br/>
 <br/>
-<input type="text" name="fligthnum" placeholder="flight #">
+<input type="text" name="flightnum" placeholder="flight #">
 <br/>
 <br/>
 <h4># first class:</h4>

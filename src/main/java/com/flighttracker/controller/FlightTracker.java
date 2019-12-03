@@ -1339,7 +1339,7 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
                     ResultSet rs = null;
                     ModelAndView model;
                     
-                        Class.forName("com.mysql .jdbc.Driver").newInstance();
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
                         connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                         statement = connection.createStatement();
                         rs = statement.executeQuery("SELECT * FROM users where id="+cid);
@@ -1347,14 +1347,16 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
                         int rows = rs.getRow();
                         rs.beforeFirst();
                         if (rows == 0){
-                                model =  new ModelAndView("redirect:userdne");
+                                model =  new ModelAndView("userdne");
+                                return model;
                         }
                         rs = statement.executeQuery("SELECT * FROM flights where number=\""+flightnum+"\"");
                         rs.last();
                         rows = rs.getRow();
                         rs.beforeFirst();
                         if (rows == 0){
-                                model =  new ModelAndView("redirect:flightdne");
+                                model =  new ModelAndView("flightdne");
+                                return model;
                         }
 
                         rs = statement.executeQuery("SELECT * FROM reservations where cid="+cid+" and flightnum=\""+flightnum+"\"");
@@ -1362,10 +1364,10 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
                         rows = rs.getRow();
                         rs.beforeFirst();
                         if (rows > 0){
-                                model =  new ModelAndView("redirect:resexists");
+                                model =  new ModelAndView("resexists");
                         }
                         else{
-                            statement.executeUpdate("INSERT into reservations(cid, flightnum, num_first_class, num_economy) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", \""+economy+");");
+                            statement.executeUpdate("INSERT into reservations(cid, flightnum, num_first_class, num_economy) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", "+economy+");");
 
                             model =  new ModelAndView("redirect:represerve");
                             

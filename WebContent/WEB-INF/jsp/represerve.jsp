@@ -29,7 +29,6 @@ table, th, td {
 <th># first class</th>
 <th># economy</th>
 <th>edit</th>
-<th>delete</th>
 </tr>
 
 <%
@@ -45,9 +44,6 @@ for(int i = 0; i < rs.size(); i++) {
         <td><%= row.get("num_economy") %></td>
         <td>
         <a href = "./resedit?selectedid=<%=row.get("id")%>">edit</a>
-        </td>
-        <td>
-        <a href = "./resdel?deleteid=<%=row.get("id")%>">delete</a>
         </td>
         </tr>
 
