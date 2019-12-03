@@ -1256,4 +1256,44 @@ public ModelAndView flightseditconf(
     return model;
 }  
 
+@RequestMapping("/represerve")
+public ModelAndView represerve(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+String connectionURL = geturl();
+String userid = (String)session.getAttribute("ID");
+if (userid != null){
+        if (isrep(userid)){
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+
+            rs = statement.executeQuery("select * from reservations");
+            rs.beforeFirst();
+            ArrayList Rows = new ArrayList();
+            while(rs.next()){
+                Dictionary row = new Hashtable();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnsNumber = rsmd.getColumnCount();
+                for (int i = 1; i <= columnsNumber; i++){
+                    row.put(rsmd.getColumnName(i), rs.getString(i));
+                }
+                Rows.add(row);
+            }
+            connection.close();
+            ModelAndView model = new ModelAndView("represerve", "rs", Rows);
+            return model;
+        }
+            
+            
+            ModelAndView model =  new ModelAndView("redirect:/");
+            return model;
+    }
+
+
+ModelAndView model =  new ModelAndView("index");
+return model;
+}  
+
 }
