@@ -42,7 +42,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class FlightTracker {
 
-
     //MAX LEGRAND
     // gets url from textfile
     public String geturl() throws FileNotFoundException, IOException{
@@ -1485,5 +1484,13 @@ public ModelAndView reseditconf(
     
     ModelAndView model =  new ModelAndView("index");
     return model;
-}  
+}
+
+    // MAX LEGRAND
+    // waiting list page
+    @RequestMapping("/repwaitinglist")
+public ModelAndView repwaitinglist(){
+    return null;
+}
+
 }
