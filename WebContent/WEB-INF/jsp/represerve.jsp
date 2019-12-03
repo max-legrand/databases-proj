@@ -43,7 +43,7 @@ for(int i = 0; i < rs.size(); i++) {
         <td><%= row.get("num_first_class") %></td>
         <td><%= row.get("num_economy") %></td>
         <td>
-        <a href = "./resedit?selectedid=<%=row.get("id")%>">edit</a>
+        <a href = "./resedit?id=<%=row.get("id")%>">edit</a>
         </td>
         </tr>
 

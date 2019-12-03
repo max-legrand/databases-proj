@@ -1171,7 +1171,8 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
         ModelAndView model =  new ModelAndView("index");
 		return model;
     }
-
+    // MAX LEGRAND
+    // edit flights logic
     @RequestMapping("/flightseditconf")
 public ModelAndView flightseditconf(
     @RequestParam("number") String number, @RequestParam("prevnumber") String prevnumber, @RequestParam("depart") String depart,
@@ -1398,4 +1399,91 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
         return model;
     }
 
+    //MAX LEGRAND
+    // reservations edit
+    @RequestMapping("/resedit")
+	public ModelAndView resedit(@RequestParam(name="id") String id, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        if (id == null || id.equals("") || id.equals(" ")){
+            ModelAndView model =  new ModelAndView("redirect:reptools");
+            return model;
+        }
+        String userid = (String)session.getAttribute("ID");
+        if (userid != null){
+                if (isrep(userid)){
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        Connection connection = null;
+                        Statement statement = null;
+                        ResultSet rs = null;
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
+                        rs = statement.executeQuery("select * from reservations where id=\""+id+"\"");
+                        rs.last();
+                        int rows = rs.getRow();
+                        rs.first();
+                        if (rows > 0){
+                            ArrayList Rows = new ArrayList();
+                       
+                            Dictionary row = new Hashtable();
+                            ResultSetMetaData rsmd = rs.getMetaData();
+                            int columnsNumber = rsmd.getColumnCount();
+                            
+                            for (int i = 1; i <= columnsNumber; i++){
+                                row.put(rsmd.getColumnName(i), rs.getString(i));
+                            }
+                            Rows.add(row);
+                            connection.close();
+                            ModelAndView model = new ModelAndView("resedit", "rs", Rows);
+                            return model;
+                        }
+                        
+                    }
+
+            }
+
+        
+        ModelAndView model =  new ModelAndView("index");
+		return model;
+    }
+
+    // MAX LEGRAND
+    // edit reservation logic
+    @RequestMapping("/reseditconf")
+public ModelAndView reseditconf(
+    @RequestParam("flightnum") String flightnum, @RequestParam("cid") String cid,  @RequestParam("id") String id, @RequestParam("first_class") String firstclass, @RequestParam("economy") String economy, HttpSession session
+) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                ModelAndView model = null;
+                
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                    connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                    statement = connection.createStatement();      
+                    
+                                   
+                    model =  new ModelAndView("redirect:represerve");
+                    statement.executeUpdate("UPDATE reservations set num_first_class="+ firstclass +", num_economy="+economy+" where id = "+id+";");
+                    connection.close();
+                
+                
+                return model;
+
+
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+}  
 }

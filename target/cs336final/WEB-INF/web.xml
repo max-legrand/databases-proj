@@ -45,6 +45,7 @@
     <url-pattern>/represerve</url-pattern>
     <url-pattern>/addres</url-pattern>
     <url-pattern>/resedit</url-pattern>
+    <url-pattern>/reseditconf</url-pattern>
     <url-pattern>/addresconf</url-pattern>
 	
   </servlet-mapping>
