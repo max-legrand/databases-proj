@@ -32,6 +32,9 @@ else if (type.equals("rep")){
 <br/>
 <br/>
 <a href="./represerve"><button>reservations</button></a>
+<br>
+<br>
+<a href="./repwaitinglist"><button>waiting lists</button></a>
 <%
 }
 %>

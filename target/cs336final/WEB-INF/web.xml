@@ -47,6 +47,8 @@
     <url-pattern>/resedit</url-pattern>
     <url-pattern>/reseditconf</url-pattern>
     <url-pattern>/addresconf</url-pattern>
+    <url-pattern>/repwaitinglist</url-pattern>
+    <url-pattern>/waitinglist</url-pattern>
 	
   </servlet-mapping>
     

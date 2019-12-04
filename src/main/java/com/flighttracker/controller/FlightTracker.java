@@ -1486,11 +1486,83 @@ public ModelAndView reseditconf(
     return model;
 }
 
+// MAX LEGRAND
+// waiting list page
+@RequestMapping("/repwaitinglist")
+public ModelAndView repwaitinglist(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                rs = statement.executeQuery("select * from flights");
+                rs.beforeFirst();
+                ArrayList Rows = new ArrayList();
+                while(rs.next()){
+                    Dictionary row = new Hashtable();
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columnsNumber = rsmd.getColumnCount();
+                    for (int i = 1; i <= columnsNumber; i++){
+                        row.put(rsmd.getColumnName(i), rs.getString(i));
+                    }
+                    Rows.add(row);
+                }
+                ModelAndView model = new ModelAndView("repwaitinglist", "rs", Rows);
+                connection.close();
+                return model;
+            }
+            ModelAndView model =  new ModelAndView("redirect:/");
+            return model;
+            
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
+    }
+
     // MAX LEGRAND
-    // waiting list page
-    @RequestMapping("/repwaitinglist")
-public ModelAndView repwaitinglist(){
-    return null;
-}
+// waiting list page
+@RequestMapping("/waitinglist")
+public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isrep(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                rs = statement.executeQuery("select * from waitinglist join flights on flights.number=waitinglist.flightnum join users on users.id = waitinglist.cid where flightnum=\""+flightnum+"\" order by cid");
+                rs.beforeFirst();
+
+                ArrayList Rows = new ArrayList();
+                while(rs.next()){
+                    Dictionary row = new Hashtable();
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columnsNumber = rsmd.getColumnCount();
+                    for (int i = 1; i <= columnsNumber; i++){
+                        row.put(rsmd.getColumnName(i), rs.getString(i));
+                    }
+                    Rows.add(row);
+
+                }
+                ModelAndView model = new ModelAndView("waitinglist", "rs", Rows);
+                model.addObject("num", flightnum);
+                connection.close();
+                return model;
+            }
+            ModelAndView model =  new ModelAndView("redirect:/");
+            return model;
+            
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
+    }
 
 }
