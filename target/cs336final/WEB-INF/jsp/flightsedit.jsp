@@ -12,6 +12,13 @@ public String formattime(String time){
 }
 %> --%>
 
+<%
+ArrayList aircrafts = (ArrayList)request.getAttribute("aircrafts");
+ArrayList airports = (ArrayList)request.getAttribute("airports");
+//Dictionary row = (Hashtable)rs.get(0);
+//String name = (String)row.get("username");
+//String admin = (String)row.get("admin");
+%>
 
 <%
 ArrayList rs = (ArrayList)request.getAttribute("rs");
@@ -74,6 +81,75 @@ String arrive = arrive_time.substring(0,10)+"T"+arrive_time.substring(11,16);
 <input type="datetime-local" name="arrive" value="<%= arrive%>">
 <br/>
 <br/>
+
+<h3>aircraft</h3>
+<select name="aircraft">
+<%
+
+for(int i = 0; i < aircrafts.size(); i++) { 
+    Dictionary row2 = (Hashtable)aircrafts.get(i);
+    if (row.get("aircraft").equals(row2.get("id"))){
+        %>
+        <option selected="selected" value="<%=row2.get("id")%>"><%=row2.get("id")%> - <%=row2.get("airline") %></option>
+   <% 
+    }else{
+  %>      
+  <option value="<%=row2.get("id")%>"><%=row2.get("id")%> - <%=row2.get("airline") %></option>
+  
+  <%
+    }
+%>
+        
+
+<% } %>
+
+
+</select>
+
+<h3>airport to:</h3>
+<select name="airport_to">
+<%
+
+for(int i = 0; i < airports.size(); i++) { 
+    Dictionary row2 = (Hashtable)airports.get(i);
+    if (row.get("airport_to").equals(row2.get("id"))){
+        %>
+        <option selected="selected" value="<%=row2.get("id")%>"><%=row2.get("id")%></option>
+   <% 
+    }else{
+  %>      
+  <option value="<%=row2.get("id")%>"><%=row2.get("id")%></option>
+  
+  <%
+    }
+%>
+
+<% } %>
+
+</select>
+
+<h3>airport from:</h3>
+<select name="airport_from">
+<%
+
+for(int i = 0; i < airports.size(); i++) { 
+    Dictionary row2 = (Hashtable)airports.get(i);
+    if (row.get("airport_from").equals(row2.get("id"))){
+        %>
+        <option selected="selected" value="<%=row2.get("id")%>"><%=row2.get("id")%></option>
+   <% 
+    }else{
+  %>      
+  <option value="<%=row2.get("id")%>"><%=row2.get("id")%></option>
+  
+  <%
+    }
+%>
+
+<% } %>
+
+</select>
+
 <h3>fare: first class</h3>
 <input type="number" name="farefirst" placeholder=0 value="<%= row.get("fare_first") %>">
 <br/>

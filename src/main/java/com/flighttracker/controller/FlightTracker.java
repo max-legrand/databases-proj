@@ -618,7 +618,7 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                     }
                     model.addObject("airportsrs", Rows);
 
-                    rs = statement.executeQuery("select * from flights");
+                    rs = statement.executeQuery("select * from flights join aircrafts on flights.aircraft = aircrafts.id order by number");
                     rs.beforeFirst();
                     Rows = new ArrayList();
                     while(rs.next()){
@@ -659,7 +659,27 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
                 if (isrep(userid)){
-                        ModelAndView model =  new ModelAndView("addaircraft");
+                        Connection connection = null;
+                        Statement statement = null;
+                        ResultSet rs = null;
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                        statement = connection.createStatement();
+
+                        rs = statement.executeQuery("select * from airline");
+                        rs.beforeFirst();
+                        ArrayList Rows = new ArrayList();
+                        while(rs.next()){
+                            Dictionary row = new Hashtable();
+                            ResultSetMetaData rsmd = rs.getMetaData();
+                            int columnsNumber = rsmd.getColumnCount();
+                            for (int i = 1; i <= columnsNumber; i++){
+                                row.put(rsmd.getColumnName(i), rs.getString(i));
+                            }
+                            Rows.add(row);
+                        }
+
+                        ModelAndView model =  new ModelAndView("addaircraft", "airline", Rows );
                         return model;
                 }
                    
@@ -676,7 +696,7 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     //MAX LEGRAND
     // add aircraft confirmation / logistics
     @RequestMapping("/addaircraftconf")
-    public ModelAndView addaircraftconf(@RequestParam("id") String id,HttpSession session
+    public ModelAndView addaircraftconf(@RequestParam("id") String id,@RequestParam("airline") String airline,HttpSession session
             )
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
             NoSuchAlgorithmException, FileNotFoundException, IOException {
@@ -701,7 +721,7 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                                 model =  new ModelAndView("redirect:aircraftexists");
                         }
                         else{
-                            statement.executeUpdate("INSERT into aircrafts(id) VALUES(\""+id+"\");");
+                            statement.executeUpdate("INSERT into aircrafts(id, airline) VALUES(\""+id+"\", \""+airline+"\");");
 
                                 model =  new ModelAndView("redirect:reptools");
                             
@@ -756,8 +776,24 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                                 row.put(rsmd.getColumnName(i), rs.getString(i));
                             }
                             Rows.add(row);
-                            connection.close();
                             ModelAndView model = new ModelAndView("aircraftedit", "rs", Rows);
+
+                            rs = statement.executeQuery("select * from airline");
+                            rs.beforeFirst();
+                            Rows = new ArrayList();
+                            while(rs.next()){
+                                row = new Hashtable();
+                                rsmd = rs.getMetaData();
+                                columnsNumber = rsmd.getColumnCount();
+                                for (int i = 1; i <= columnsNumber; i++){
+                                    row.put(rsmd.getColumnName(i), rs.getString(i));
+                                }
+                                Rows.add(row);
+                            }
+
+                            model.addObject("airline", Rows);
+
+                            connection.close();
                             return model;
                         }
                         
@@ -774,7 +810,7 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     // aircraft edit confirmation / logistics
     @RequestMapping("/aircrafteditconf")
     public ModelAndView aircrafteditconf(
-    @RequestParam("id") String id,@RequestParam("previd") String previd, 
+    @RequestParam("id") String id,@RequestParam("previd") String previd, @RequestParam("airline") String airline, 
         HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
     String userid = (String)session.getAttribute("ID");
@@ -800,12 +836,12 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                         else{
                         
                             model =  new ModelAndView("redirect:reptools");
-                            statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\" where id=\""+previd+"\";");
+                            statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\", airline=\""+airline+"\" where id=\""+previd+"\";");
                         }
                     }
                     else{
                         model =  new ModelAndView("redirect:reptools");
-                        statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\" where id=\""+previd+"\";");
+                        statement.executeUpdate("UPDATE aircrafts set id=\""+id+"\", airline=\""+airline+"\" where id=\""+previd+"\";");
                     }
                     connection.close();
                 
@@ -1059,8 +1095,43 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
         String userid = (String)session.getAttribute("ID");
         if (userid != null){
                 if (isrep(userid)){
-                        ModelAndView model =  new ModelAndView("flightsadd");
-                        return model;
+                    Connection connection = null;
+                    Statement statement = null;
+                    ResultSet rs = null;
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                    connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                    statement = connection.createStatement();
+
+                    rs = statement.executeQuery("select * from airports");
+                    rs.beforeFirst();
+                    ArrayList Rows = new ArrayList();
+                    while(rs.next()){
+                        Dictionary row = new Hashtable();
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int columnsNumber = rsmd.getColumnCount();
+                        for (int i = 1; i <= columnsNumber; i++){
+                            row.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        Rows.add(row);
+                    }
+
+                        
+                    ModelAndView model =  new ModelAndView("flightsadd", "airports", Rows);
+                    rs = statement.executeQuery("select * from aircrafts");
+                    rs.beforeFirst();
+                    Rows = new ArrayList();
+                    while(rs.next()){
+                        Dictionary row = new Hashtable();
+                        ResultSetMetaData rsmd = rs.getMetaData();
+                        int columnsNumber = rsmd.getColumnCount();
+                        for (int i = 1; i <= columnsNumber; i++){
+                            row.put(rsmd.getColumnName(i), rs.getString(i));
+                        }
+                        Rows.add(row);
+                    }
+                    model.addObject("aircrafts", Rows);
+					connection.close();
+                    return model;
                 }
                    
                     
@@ -1078,7 +1149,9 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
     @RequestMapping("/flightsaddconf")
     public ModelAndView flightsaddconf(@RequestParam("number") String number, @RequestParam("depart") String depart,
     @RequestParam("arrive") String arrive, @RequestParam("farefirst") int firstclass,
-    @RequestParam("fareecon") int econclass, @RequestParam("type") String type, HttpSession session
+    @RequestParam("fareecon") int econclass, @RequestParam("type") String type, 
+    @RequestParam("aircraft") String aircraft, @RequestParam("airport_to") String ato, @RequestParam("airport_from") String afrom,
+    HttpSession session
             )
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException,
             NoSuchAlgorithmException, FileNotFoundException, IOException {
@@ -1091,7 +1164,7 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
                     ResultSet rs = null;
                     ModelAndView model;
                     
-                        Class.forName("com.mysql .jdbc.Driver").newInstance();
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
                         connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                         statement = connection.createStatement();
                         rs = statement.executeQuery("SELECT * FROM flights where number=\""+number+"\"");
@@ -1102,7 +1175,7 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
                                 model =  new ModelAndView("redirect:duplicate");
                         }
                         else{
-                            statement.executeUpdate("INSERT into flights(number, type, depart_time, arrive_time, fare_first, fare_econ) VALUES(\""+number+"\", \""+type+"\", \""+depart+"\", \""+arrive+"\", "+firstclass+", "+econclass+");");
+                            statement.executeUpdate("INSERT into flights(number, type, depart_time, arrive_time, fare_first, fare_econ, aircraft, airport_to, airport_from) VALUES(\""+number+"\", \""+type+"\", \""+depart+"\", \""+arrive+"\", "+firstclass+", "+econclass+", \""+aircraft+"\", \""+ato+"\", \""+afrom+"\");");
 
                             model =  new ModelAndView("redirect:reptools");
                             
@@ -1157,8 +1230,38 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
                                 row.put(rsmd.getColumnName(i), rs.getString(i));
                             }
                             Rows.add(row);
-                            connection.close();
                             ModelAndView model = new ModelAndView("flightsedit", "rs", Rows);
+
+                            rs = statement.executeQuery("select * from airports");
+                            rs.beforeFirst();
+                            Rows = new ArrayList();
+                            while(rs.next()){
+                                row = new Hashtable();
+                                rsmd = rs.getMetaData();
+                                columnsNumber = rsmd.getColumnCount();
+                                for (int i = 1; i <= columnsNumber; i++){
+                                    row.put(rsmd.getColumnName(i), rs.getString(i));
+                                }
+                                Rows.add(row);
+                            }
+
+                        
+                            model.addObject("airports", Rows);
+
+                            rs = statement.executeQuery("select * from aircrafts");
+                            rs.beforeFirst();
+                            Rows = new ArrayList();
+                            while(rs.next()){
+                                row = new Hashtable();
+                                rsmd = rs.getMetaData();
+                                columnsNumber = rsmd.getColumnCount();
+                                for (int i = 1; i <= columnsNumber; i++){
+                                    row.put(rsmd.getColumnName(i), rs.getString(i));
+                                }
+                                Rows.add(row);
+                            }
+                            model.addObject("aircrafts", Rows);
+					        connection.close();
                             return model;
                         }
                         
@@ -1176,7 +1279,9 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
 public ModelAndView flightseditconf(
     @RequestParam("number") String number, @RequestParam("prevnumber") String prevnumber, @RequestParam("depart") String depart,
     @RequestParam("arrive") String arrive, @RequestParam("farefirst") int firstclass,
-    @RequestParam("fareecon") int econclass, @RequestParam("type") String type, HttpSession session
+    @RequestParam("fareecon") int econclass, @RequestParam("type") String type,
+    @RequestParam("aircraft") String aircraft,@RequestParam("airport_to") String ato,@RequestParam("airport_from") String afrom,
+    HttpSession session
 ) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
     String connectionURL = geturl();
     String userid = (String)session.getAttribute("ID");
@@ -1201,13 +1306,13 @@ public ModelAndView flightseditconf(
                         }
                         else{                  
                             model =  new ModelAndView("redirect:reptools");
-                            statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\" where number=\""+prevnumber+"\";");
+                            statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\", aircraft=\""+aircraft+"\", airport_to=\""+ato+"\", airport_from=\""+afrom+"\" where number=\""+prevnumber+"\";");
                         }
                     }
                    else{
                                    
                         model =  new ModelAndView("redirect:reptools");
-                        statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\" where number=\""+prevnumber+"\";");
+                        statement.executeUpdate("UPDATE flights set number=\""+number+"\", depart_time=\""+depart+"\", arrive_time=\""+arrive+"\", fare_first="+firstclass+", fare_econ="+econclass+", type=\""+type+"\", aircraft=\""+aircraft+"\", airport_to=\""+ato+"\", airport_from=\""+afrom+"\" where number=\""+prevnumber+"\";");
                    }
                     connection.close();
                 
@@ -1307,6 +1412,7 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
     String userid = (String)session.getAttribute("ID");
     if (userid != null){
             if (isrep(userid)){
+                
                     ModelAndView model =  new ModelAndView("addres");
                     return model;
             }
@@ -1500,7 +1606,7 @@ public ModelAndView repwaitinglist(HttpSession session)throws InstantiationExcep
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
                 connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
                 statement = connection.createStatement();
-                rs = statement.executeQuery("select * from flights");
+                rs = statement.executeQuery("select * from flights join aircrafts on flights.aircraft = aircrafts.id order by number");
                 rs.beforeFirst();
                 ArrayList Rows = new ArrayList();
                 while(rs.next()){

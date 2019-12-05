@@ -24,6 +24,7 @@ table, th, td {
 
 <tr>
 <th>id</th>
+<th>airline</th>
 <th>edit</th>
 <th>delete</th>
 </tr>
@@ -35,6 +36,7 @@ for(int i = 0; i < rs.size(); i++) {
     %>
         <tr style='font-size: large;'>
         <td><%= row.get("id") %></td>
+        <td><%= row.get("airline") %></td>
         <td>
         <a href = "./aircraftedit?selectedid=<%=row.get("id")%>">edit</a>
         </td>
@@ -106,13 +108,17 @@ table, th, td {
 <a href="./flightsadd">Add flight</a>
 <br/>
 <br/>
-<table style="width: 50%; ">
+<table style="width: 75%; ">
 
 <tr>
 <th>number</th>
 <th>type</th>
 <th>depart time</th>
 <th>arrive time</th>
+<th>aircraft</th>
+<th>airline</th>
+<th>To</th>
+<th>From</th>
 <th>1st class fare</th>
 <th>economy fare</th>
 <th>edit</th>
@@ -129,6 +135,10 @@ for(int i = 0; i < rs.size(); i++) {
         <td><%= row.get("type") %></td>
         <td><%= row.get("depart_time") %></td>
         <td><%= row.get("arrive_time") %></td>
+        <td><%= row.get("aircraft") %></td>
+        <td><%= row.get("airline") %></td>
+        <td><%= row.get("airport_to") %></td>
+        <td><%= row.get("airport_from") %></td>
         <td><%= row.get("fare_first") %></td>
         <td><%= row.get("fare_econ") %></td>
         <td>
