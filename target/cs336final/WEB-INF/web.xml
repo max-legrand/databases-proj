@@ -49,6 +49,7 @@
     <url-pattern>/addresconf</url-pattern>
     <url-pattern>/repwaitinglist</url-pattern>
     <url-pattern>/waitinglist</url-pattern>
+    <url-pattern>/testpage</url-pattern>
 	
   </servlet-mapping>
     

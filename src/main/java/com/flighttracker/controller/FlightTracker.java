@@ -22,7 +22,9 @@ import java.util.Hashtable;
 import java.util.Random;
 import java.util.Properties;
 import java.io.InputStream;
-
+import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 
 import java.util.UUID;
 
@@ -1438,6 +1440,10 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
             NoSuchAlgorithmException, FileNotFoundException, IOException {
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String currentdate = dateFormat.format(date);
+	    // System.out.println(dateFormat.format(date))
         if (userid != null){
                 if (isrep(userid)){
                     Connection connection = null;
@@ -1473,9 +1479,13 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
                                 model =  new ModelAndView("resexists");
                         }
                         else{
-                            statement.executeUpdate("INSERT into reservations(cid, flightnum, num_first_class, num_economy) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", "+economy+");");
+                            statement.executeUpdate("INSERT into reservations(cid, flightnum, num_first_class, num_economy, date_made) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", "+economy+", \""+currentdate+"\");");
+                            // String query = "INSERT into reservations(cid, flightnum, num_first_class, num_economy, date_made) VALUES("+cid+", \""+flightnum+"\", "+firstclass+", "+economy+", \""+currentdate+"\");";
 
                             model =  new ModelAndView("redirect:represerve");
+                            // connection.close();
+                            // model = new ModelAndView("testpage", "q", query);
+                            return model;
                             
                         }
                         
@@ -1670,5 +1680,11 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         ModelAndView model =  new ModelAndView("index");
         return model;
     }
+
+
+    @RequestMapping("/testpage")
+public ModelAndView testpage(){
+    return new ModelAndView("testpage");
+}
 
 }
