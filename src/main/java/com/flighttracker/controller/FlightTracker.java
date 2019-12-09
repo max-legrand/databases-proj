@@ -1716,7 +1716,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
-            if(m.equals("NONE") && y.equals("NONE")){
+            if(!m.equals("NONE") && !y.equals("NONE")){
                 Connection connection = null;
                 Statement statement = null;
                 ResultSet rs = null;
