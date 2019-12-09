@@ -1711,6 +1711,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         return model;
     }
     //Peter Marchese
+    //Creates page for sales report (Admin function)
     @RequestMapping("/salesreport")
     public ModelAndView salesreport(@RequestParam(name = "month", required = false, defaultValue = "NONE") String m, @RequestParam(name = "year", required = false, defaultValue = "NONE") String y, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
@@ -1737,34 +1738,94 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         return model;
     }
     //Peter Marchese
+    //Creates page for obtaining reservation list from either customer name or flight number.
     @RequestMapping("/reslist")
-    public ModelAndView reslist(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        return new ModelAndView("reslist");
+    public ModelAndView reslist(@RequestParam(name = "name", required = false, defaultValue = "NONE") String name, @RequestParam(name = "flightNumber", required = false, defaultValue = "NONE") String flightNumber, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            if(!name.equals("NONE") || !flightNumber.equals("NONE")){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                if(name.equals("NONE")){
+                    //For finding reservations by flightID
+                    //I gotta figure the SQL code out
+                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                } 
+                else {
+                    //For finding reservations based off of customer name
+                    //gotta figure out the SQL for this too
+                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                }
+                rs.beforeFirst();
+                ArrayList rows = multiAL(rs);
+                connection.close();
+                ModelAndView model =  new ModelAndView("reslist");
+                return model;
+            }
+            ModelAndView model =  new ModelAndView("reslist");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
     }
     //Peter Marchese
     @RequestMapping("/revgen")
     public ModelAndView revgen(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        return new ModelAndView("revgen");
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            ModelAndView model =  new ModelAndView("revgen");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
     }
     //Peter Marchese
     @RequestMapping("/customerrev")
     public ModelAndView customerrev(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        return new ModelAndView("customerrev");
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            ModelAndView model =  new ModelAndView("customerrev");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
     }
     //Peter Marchese
     @RequestMapping("/ticketssold")
     public ModelAndView ticketssold(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        return new ModelAndView("ticketssold");
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            ModelAndView model =  new ModelAndView("ticketssold");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
     }
     //Peter Marchese
     @RequestMapping("/allflights")
     public ModelAndView allflights(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        return new ModelAndView("allflights");
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            ModelAndView model =  new ModelAndView("allflights");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
     }
 
     @RequestMapping("/testpage")
     public ModelAndView testpage(){
-        return new ModelAndView("testpage");
+        ModelAndView model = new ModelAndView("testpage");
+        return model;
     }
 
 }
