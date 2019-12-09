@@ -1670,5 +1670,37 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         ModelAndView model =  new ModelAndView("index");
         return model;
     }
+    //Peter Marchese
+    @RequestMapping("/salesreport")
+    public ModelAndView salesreport(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        
+        ModelAndView model =  new ModelAndView("index");
+        return model;
+    }
+    //Peter Marchese
+    @RequestMapping("/reslist")
+    public ModelAndView reslist(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        return new ModelAndView("reslist");
+    }
+    //Peter Marchese
+    @RequestMapping("/revgen")
+    public ModelAndView revgen(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        return new ModelAndView("revgen");
+    }
+    //Peter Marchese
+    @RequestMapping("/customerrev")
+    public ModelAndView customerrev(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        return new ModelAndView("customerrev");
+    }
+    //Peter Marchese
+    @RequestMapping("/ticketssold")
+    public ModelAndView ticketssold(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        return new ModelAndView("ticketssold");
+    }
+    //Peter Marchese
+    @RequestMapping("/allflights")
+    public ModelAndView allflights(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        return new ModelAndView("allflights");
+    }
 
 }
