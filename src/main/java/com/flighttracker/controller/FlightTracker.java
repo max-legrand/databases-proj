@@ -1712,8 +1712,27 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
     }
     //Peter Marchese
     @RequestMapping("/salesreport")
-    public ModelAndView salesreport(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
-        
+    public ModelAndView salesreport(@RequestParam(name = "month", required = false, defaultValue = "NONE") String m, @RequestParam(name = "year", required = false, defaultValue = "NONE") String y, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            if(m.equals("NONE") && y.equals("NONE")){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number where year(date_made)='"+y+"' and month(date_made)='"+m+"'");
+                rs.beforeFirst();
+                ArrayList rows = multiAL(rs);
+                connection.close();
+                ModelAndView model =  new ModelAndView("salesreport", "rs", rows);
+                return model;
+            }
+            ModelAndView model =  new ModelAndView("salesreport");
+            return model;
+        }
         ModelAndView model =  new ModelAndView("index");
         return model;
     }
@@ -1743,10 +1762,9 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         return new ModelAndView("allflights");
     }
 
-
     @RequestMapping("/testpage")
-public ModelAndView testpage(){
-    return new ModelAndView("testpage");
-}
+    public ModelAndView testpage(){
+        return new ModelAndView("testpage");
+    }
 
 }
