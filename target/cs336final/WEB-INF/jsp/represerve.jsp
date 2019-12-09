@@ -28,6 +28,7 @@ table, th, td {
 <th>flight num</th>
 <th># first class</th>
 <th># economy</th>
+<th>date made</th>
 <th>edit</th>
 </tr>
 
@@ -42,6 +43,7 @@ for(int i = 0; i < rs.size(); i++) {
         <td><%= row.get("flightnum") %></td>
         <td><%= row.get("num_first_class") %></td>
         <td><%= row.get("num_economy") %></td>
+        <td><%= row.get("date_made") %></td>
         <td>
         <a href = "./resedit?id=<%=row.get("id")%>">edit</a>
         </td>

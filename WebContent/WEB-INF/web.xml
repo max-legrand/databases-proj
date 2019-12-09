@@ -55,6 +55,7 @@
     <url-pattern>/customerrev</url-pattern>
     <url-pattern>/ticketssold</url-pattern>
     <url-pattern>/allflights</url-pattern>
+    <url-pattern>/testpage</url-pattern>
 	
   </servlet-mapping>
     
