@@ -1282,7 +1282,7 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
 
                             rs = statement.executeQuery("select * from aircrafts");
                             rs.beforeFirst();
-                            Rows = mutliAL(rs);
+                            Rows = multiAL(rs);
                             // while(rs.next()){
                             //     row = new Hashtable();
                             //     rsmd = rs.getMetaData();
