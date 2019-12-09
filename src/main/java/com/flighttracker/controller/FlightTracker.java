@@ -268,20 +268,20 @@ public class FlightTracker {
 
             if (rows > 0){
 
-                ArrayList Rows = new ArrayList();
-                for (int i = 0; i < rows; i++){
-                 Dictionary row = new Hashtable();
-                 ResultSetMetaData rsmd = rs.getMetaData();
-                 int columnsNumber = rsmd.getColumnCount();
+                ArrayList Rows = singleAL(rs);
+                // for (int i = 0; i < rows; i++){
+                //  Dictionary row = new Hashtable();
+                //  ResultSetMetaData rsmd = rs.getMetaData();
+                //  int columnsNumber = rsmd.getColumnCount();
                  
-                 for (i = 1; i <= columnsNumber; i++){
-                     row.put(rsmd.getColumnName(i), rs.getString(i));
-                 }
-                 Rows.add(row);
-                 rs.next();
-                }
+                //  for (i = 1; i <= columnsNumber; i++){
+                //      row.put(rsmd.getColumnName(i), rs.getString(i));
+                //  }
+                //  Rows.add(row);
+                //  rs.next();
+                // }
                 connection.close();
-                    ModelAndView model = new ModelAndView("feed", "rs", Rows);
+                ModelAndView model = new ModelAndView("feed", "rs", Rows);
 
                     return model;
             }
@@ -357,16 +357,16 @@ public class FlightTracker {
 
                     rs = statement.executeQuery("select * from users where type='customer' or type='rep'");
                     rs.beforeFirst();
-                    ArrayList Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    ArrayList Rows = multiAL(rs);
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
                     connection.close();
                     ModelAndView model = new ModelAndView("admintools", "rs", Rows);
                     return model;
@@ -418,16 +418,16 @@ public class FlightTracker {
                                 connection.close();
                                 return model;
                             }
-                            ArrayList Rows = new ArrayList();
+                            ArrayList Rows = singleAL(rs);
                        
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
+                            // Dictionary row = new Hashtable();
+                            // ResultSetMetaData rsmd = rs.getMetaData();
+                            // int columnsNumber = rsmd.getColumnCount();
                             
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
+                            // for (int i = 1; i <= columnsNumber; i++){
+                            //     row.put(rsmd.getColumnName(i), rs.getString(i));
+                            // }
+                            // Rows.add(row);
                             connection.close();
                             ModelAndView model = new ModelAndView("adminedit", "rs", Rows);
                             return model;
@@ -575,7 +575,36 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
     ModelAndView model =  new ModelAndView("index");
     return model;
 }  
-	
+    
+
+public ArrayList multiAL(ResultSet rs) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    rs.beforeFirst();
+    ArrayList Rows = new ArrayList();
+    while(rs.next()){
+        Dictionary row = new Hashtable();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        for (int i = 1; i <= columnsNumber; i++){
+            row.put(rsmd.getColumnName(i), rs.getString(i));
+        }
+        Rows.add(row);
+    }
+    return Rows;
+}
+
+public ArrayList singleAL(ResultSet rs) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    ArrayList Rows = new ArrayList();                   
+    Dictionary row = new Hashtable();
+    ResultSetMetaData rsmd = rs.getMetaData();
+    int columnsNumber = rsmd.getColumnCount();
+    
+    for (int i = 1; i <= columnsNumber; i++){
+        row.put(rsmd.getColumnName(i), rs.getString(i));
+    }
+    Rows.add(row);
+    return Rows;
+}
+
 //MAX LEGRAND
 // routes to rep tools
 @RequestMapping("/reptools")
@@ -593,45 +622,46 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
 
                     rs = statement.executeQuery("select * from aircrafts");
                     rs.beforeFirst();
-                    ArrayList Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    // ArrayList Rows = new ArrayList();
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
+                    ArrayList Rows = multiAL(rs);
                     
                     ModelAndView model = new ModelAndView("reptools", "aircraftrs", Rows);
                     
                     rs = statement.executeQuery("select * from airports");
                     rs.beforeFirst();
-                    Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    Rows = multiAL(rs);
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
                     model.addObject("airportsrs", Rows);
 
                     rs = statement.executeQuery("select * from flights join aircrafts on flights.aircraft = aircrafts.id order by number");
                     rs.beforeFirst();
-                    Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    Rows = multiAL(rs);
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
                     model.addObject("flightsrs", Rows);
 
                     connection.close();
@@ -670,16 +700,16 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
 
                         rs = statement.executeQuery("select * from airline");
                         rs.beforeFirst();
-                        ArrayList Rows = new ArrayList();
-                        while(rs.next()){
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
-                        }
+                        ArrayList Rows = multiAL(rs);
+                        // while(rs.next()){
+                        //     Dictionary row = new Hashtable();
+                        //     ResultSetMetaData rsmd = rs.getMetaData();
+                        //     int columnsNumber = rsmd.getColumnCount();
+                        //     for (int i = 1; i <= columnsNumber; i++){
+                        //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                        //     }
+                        //     Rows.add(row);
+                        // }
 
                         ModelAndView model =  new ModelAndView("addaircraft", "airline", Rows );
                         return model;
@@ -768,30 +798,30 @@ HttpSession session, HttpServletRequest request, HttpServletResponse response) t
                         int rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
-                            ArrayList Rows = new ArrayList();
+                            ArrayList Rows = singleAL(rs);
                        
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
+                            // Dictionary row = new Hashtable();
+                            // ResultSetMetaData rsmd = rs.getMetaData();
+                            // int columnsNumber = rsmd.getColumnCount();
                             
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
+                            // for (int i = 1; i <= columnsNumber; i++){
+                            //     row.put(rsmd.getColumnName(i), rs.getString(i));
+                            // }
+                            // Rows.add(row);
                             ModelAndView model = new ModelAndView("aircraftedit", "rs", Rows);
 
                             rs = statement.executeQuery("select * from airline");
                             rs.beforeFirst();
-                            Rows = new ArrayList();
-                            while(rs.next()){
-                                row = new Hashtable();
-                                rsmd = rs.getMetaData();
-                                columnsNumber = rsmd.getColumnCount();
-                                for (int i = 1; i <= columnsNumber; i++){
-                                    row.put(rsmd.getColumnName(i), rs.getString(i));
-                                }
-                                Rows.add(row);
-                            }
+                            Rows = multiAL(rs);
+                            // while(rs.next()){
+                            //     row = new Hashtable();
+                            //     rsmd = rs.getMetaData();
+                            //     columnsNumber = rsmd.getColumnCount();
+                            //     for (int i = 1; i <= columnsNumber; i++){
+                            //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                            //     }
+                            //     Rows.add(row);
+                            // }
 
                             model.addObject("airline", Rows);
 
@@ -982,16 +1012,16 @@ public ModelAndView aircraftdel(@RequestParam("deleteid") String delid, HttpSess
                         int rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
-                            ArrayList Rows = new ArrayList();
+                            ArrayList Rows = singleAL(rs);
                        
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
+                            // Dictionary row = new Hashtable();
+                            // ResultSetMetaData rsmd = rs.getMetaData();
+                            // int columnsNumber = rsmd.getColumnCount();
                             
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
+                            // for (int i = 1; i <= columnsNumber; i++){
+                            //     row.put(rsmd.getColumnName(i), rs.getString(i));
+                            // }
+                            // Rows.add(row);
                             connection.close();
                             ModelAndView model = new ModelAndView("airportsedit", "rs", Rows);
                             return model;
@@ -1106,31 +1136,31 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
 
                     rs = statement.executeQuery("select * from airports");
                     rs.beforeFirst();
-                    ArrayList Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    ArrayList Rows = multiAL(rs);
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
 
                         
                     ModelAndView model =  new ModelAndView("flightsadd", "airports", Rows);
                     rs = statement.executeQuery("select * from aircrafts");
                     rs.beforeFirst();
-                    Rows = new ArrayList();
-                    while(rs.next()){
-                        Dictionary row = new Hashtable();
-                        ResultSetMetaData rsmd = rs.getMetaData();
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++){
-                            row.put(rsmd.getColumnName(i), rs.getString(i));
-                        }
-                        Rows.add(row);
-                    }
+                    Rows = multiAL(rs);
+                    // while(rs.next()){
+                    //     Dictionary row = new Hashtable();
+                    //     ResultSetMetaData rsmd = rs.getMetaData();
+                    //     int columnsNumber = rsmd.getColumnCount();
+                    //     for (int i = 1; i <= columnsNumber; i++){
+                    //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                    //     }
+                    //     Rows.add(row);
+                    // }
                     model.addObject("aircrafts", Rows);
 					connection.close();
                     return model;
@@ -1222,46 +1252,46 @@ public ModelAndView airportsdel(@RequestParam("deleteid") String delid, HttpSess
                         int rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
-                            ArrayList Rows = new ArrayList();
+                            ArrayList Rows = singleAL(rs);
                        
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
+                            // Dictionary row = new Hashtable();
+                            // ResultSetMetaData rsmd = rs.getMetaData();
+                            // int columnsNumber = rsmd.getColumnCount();
                             
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
+                            // for (int i = 1; i <= columnsNumber; i++){
+                            //     row.put(rsmd.getColumnName(i), rs.getString(i));
+                            // }
+                            // Rows.add(row);
                             ModelAndView model = new ModelAndView("flightsedit", "rs", Rows);
 
                             rs = statement.executeQuery("select * from airports");
                             rs.beforeFirst();
-                            Rows = new ArrayList();
-                            while(rs.next()){
-                                row = new Hashtable();
-                                rsmd = rs.getMetaData();
-                                columnsNumber = rsmd.getColumnCount();
-                                for (int i = 1; i <= columnsNumber; i++){
-                                    row.put(rsmd.getColumnName(i), rs.getString(i));
-                                }
-                                Rows.add(row);
-                            }
+                            Rows = multiAL(rs);
+                            // while(rs.next()){
+                            //     row = new Hashtable();
+                            //     rsmd = rs.getMetaData();
+                            //     columnsNumber = rsmd.getColumnCount();
+                            //     for (int i = 1; i <= columnsNumber; i++){
+                            //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                            //     }
+                            //     Rows.add(row);
+                            // }
 
                         
                             model.addObject("airports", Rows);
 
                             rs = statement.executeQuery("select * from aircrafts");
                             rs.beforeFirst();
-                            Rows = new ArrayList();
-                            while(rs.next()){
-                                row = new Hashtable();
-                                rsmd = rs.getMetaData();
-                                columnsNumber = rsmd.getColumnCount();
-                                for (int i = 1; i <= columnsNumber; i++){
-                                    row.put(rsmd.getColumnName(i), rs.getString(i));
-                                }
-                                Rows.add(row);
-                            }
+                            Rows = mutliAL(rs);
+                            // while(rs.next()){
+                            //     row = new Hashtable();
+                            //     rsmd = rs.getMetaData();
+                            //     columnsNumber = rsmd.getColumnCount();
+                            //     for (int i = 1; i <= columnsNumber; i++){
+                            //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                            //     }
+                            //     Rows.add(row);
+                            // }
                             model.addObject("aircrafts", Rows);
 					        connection.close();
                             return model;
@@ -1380,16 +1410,16 @@ if (userid != null){
 
             rs = statement.executeQuery("select * from reservations");
             rs.beforeFirst();
-            ArrayList Rows = new ArrayList();
-            while(rs.next()){
-                Dictionary row = new Hashtable();
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int columnsNumber = rsmd.getColumnCount();
-                for (int i = 1; i <= columnsNumber; i++){
-                    row.put(rsmd.getColumnName(i), rs.getString(i));
-                }
-                Rows.add(row);
-            }
+            ArrayList Rows = multiAL(rs);
+            // while(rs.next()){
+            //     Dictionary row = new Hashtable();
+            //     ResultSetMetaData rsmd = rs.getMetaData();
+            //     int columnsNumber = rsmd.getColumnCount();
+            //     for (int i = 1; i <= columnsNumber; i++){
+            //         row.put(rsmd.getColumnName(i), rs.getString(i));
+            //     }
+            //     Rows.add(row);
+            // }
             connection.close();
             ModelAndView model = new ModelAndView("represerve", "rs", Rows);
             return model;
@@ -1537,16 +1567,16 @@ public ModelAndView addres(HttpSession session, HttpServletRequest request, Http
                         int rows = rs.getRow();
                         rs.first();
                         if (rows > 0){
-                            ArrayList Rows = new ArrayList();
+                            ArrayList Rows = singleAL(rs);
                        
-                            Dictionary row = new Hashtable();
-                            ResultSetMetaData rsmd = rs.getMetaData();
-                            int columnsNumber = rsmd.getColumnCount();
+                            // Dictionary row = new Hashtable();
+                            // ResultSetMetaData rsmd = rs.getMetaData();
+                            // int columnsNumber = rsmd.getColumnCount();
                             
-                            for (int i = 1; i <= columnsNumber; i++){
-                                row.put(rsmd.getColumnName(i), rs.getString(i));
-                            }
-                            Rows.add(row);
+                            // for (int i = 1; i <= columnsNumber; i++){
+                            //     row.put(rsmd.getColumnName(i), rs.getString(i));
+                            // }
+                            // Rows.add(row);
                             connection.close();
                             ModelAndView model = new ModelAndView("resedit", "rs", Rows);
                             return model;
@@ -1618,16 +1648,16 @@ public ModelAndView repwaitinglist(HttpSession session)throws InstantiationExcep
                 statement = connection.createStatement();
                 rs = statement.executeQuery("select * from flights join aircrafts on flights.aircraft = aircrafts.id order by number");
                 rs.beforeFirst();
-                ArrayList Rows = new ArrayList();
-                while(rs.next()){
-                    Dictionary row = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    for (int i = 1; i <= columnsNumber; i++){
-                        row.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
-                    Rows.add(row);
-                }
+                ArrayList Rows = multiAL(rs);
+                // while(rs.next()){
+                //     Dictionary row = new Hashtable();
+                //     ResultSetMetaData rsmd = rs.getMetaData();
+                //     int columnsNumber = rsmd.getColumnCount();
+                //     for (int i = 1; i <= columnsNumber; i++){
+                //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                //     }
+                //     Rows.add(row);
+                // }
                 ModelAndView model = new ModelAndView("repwaitinglist", "rs", Rows);
                 connection.close();
                 return model;
@@ -1657,17 +1687,17 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
                 rs = statement.executeQuery("select * from waitinglist join flights on flights.number=waitinglist.flightnum join users on users.id = waitinglist.cid where flightnum=\""+flightnum+"\" order by cid");
                 rs.beforeFirst();
 
-                ArrayList Rows = new ArrayList();
-                while(rs.next()){
-                    Dictionary row = new Hashtable();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
-                    for (int i = 1; i <= columnsNumber; i++){
-                        row.put(rsmd.getColumnName(i), rs.getString(i));
-                    }
-                    Rows.add(row);
+                ArrayList Rows = multiAL(rs);
+                // while(rs.next()){
+                //     Dictionary row = new Hashtable();
+                //     ResultSetMetaData rsmd = rs.getMetaData();
+                //     int columnsNumber = rsmd.getColumnCount();
+                //     for (int i = 1; i <= columnsNumber; i++){
+                //         row.put(rsmd.getColumnName(i), rs.getString(i));
+                //     }
+                //     Rows.add(row);
 
-                }
+                // }
                 ModelAndView model = new ModelAndView("waitinglist", "rs", Rows);
                 model.addObject("num", flightnum);
                 connection.close();
