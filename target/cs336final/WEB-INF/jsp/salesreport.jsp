@@ -10,7 +10,7 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
       <title>Sales Report</title>
    </head>
    <body>
-   <form action="./salesreport" method="post">
+   <form action="./salesreport.jsp" method="post">
    <input type = "number" name="month", min=1, max=12, value=1>
    <br/>
    <br/>

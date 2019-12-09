@@ -23,7 +23,7 @@ if (type.equals("admin")){
 %>
 
 <a href="./admintools"><button>admin tools</button></a>
-<a href="./salesreport.jsp"><button>sales report</button></a>
+<a href="./salesreport"><button>sales report</button></a>
 <%
 }
 else if (type.equals("rep")){
