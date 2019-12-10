@@ -1775,10 +1775,39 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
     }
     //Peter Marchese
     @RequestMapping("/revgen")
-    public ModelAndView revgen(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    public ModelAndView revgen(@RequestParam(name = "flight", required = false, defaultValue = "NONE") String flight,@RequestParam(name = "airline", required = false, defaultValue = "NONE") String airline,@RequestParam(name = "customer", required = false, defaultValue = "NONE") String customer,
+    HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
+            if(!flight.equals("NONE") || !airline.equals("NONE") || !customer.equals("NONE")){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                //For flight
+                if(!flight.equals("NONE") && customer.equals("NONE") && airline.equals("NONE")){
+                    ////////////////////////////////////////
+                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                } 
+                //For customer
+                else if(flight.equals("NONE") && !customer.equals("NONE") && airline.equals("NONE")){
+                    ///////////////////////////////////////
+                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                }
+                //For airline
+                else{
+                    ///////////////////////////////////////
+                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                }
+                rs.beforeFirst();
+                ArrayList rows = multiAL(rs);
+                connection.close();
+                ModelAndView model =  new ModelAndView("reslist");
+                return model;
+            }
             ModelAndView model =  new ModelAndView("revgen");
             return model;
         }
@@ -1791,6 +1820,17 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            //Gotta figure out SQL path
+            rs = statement.executeQuery("");
+            rs.beforeFirst();
+            ArrayList rows = multiAL(rs);
+            connection.close();
             ModelAndView model =  new ModelAndView("customerrev");
             return model;
         }
@@ -1803,6 +1843,17 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet rs = null;
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+            statement = connection.createStatement();
+            //Gotta figure out SQL path
+            rs = statement.executeQuery("");
+            rs.beforeFirst();
+            ArrayList rows = multiAL(rs);
+            connection.close();
             ModelAndView model =  new ModelAndView("ticketssold");
             return model;
         }
@@ -1811,10 +1862,25 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
     }
     //Peter Marchese
     @RequestMapping("/allflights")
-    public ModelAndView allflights(HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    public ModelAndView allflights(@RequestParam(name = "airport", required = false, defaultValue = "NONE") String airport, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
         String connectionURL = geturl();
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
+            if(!airport.equals("NONE")){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                ///////////////////////////////////
+                rs = statement.executeQuery("");
+                rs.beforeFirst();
+                ArrayList rows = multiAL(rs);
+                connection.close();
+                ModelAndView model =  new ModelAndView("salesreport", "rs", rows);
+                return model;
+            }
             ModelAndView model =  new ModelAndView("allflights");
             return model;
         }

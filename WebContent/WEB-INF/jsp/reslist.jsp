@@ -10,7 +10,7 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
       <title>Reservation List</title>
    </head>
    <body>
-   <form action="./salesreport" method="post">
+   <form action="./reslist" method="post">
    <input type = "number" name="flight number">
    <br/>
    <br/>
