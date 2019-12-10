@@ -1753,13 +1753,11 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
                 statement = connection.createStatement();
                 if(name.equals("NONE")){
                     //For finding reservations by flightID
-                    //I gotta figure the SQL code out
-                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users WHERE reservations.flightnum ="+flightNumber);
                 } 
                 else {
                     //For finding reservations based off of customer name
-                    //gotta figure out the SQL for this too
-                    rs = statement.executeQuery("SELECT * FROM reservations join flights on reservations.flightnum = flights.number");
+                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users WHERE users.username ="+name);
                 }
                 rs.beforeFirst();
                 ArrayList rows = multiAL(rs);

@@ -22,7 +22,12 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
    <table style="width: 65%; ">
     <tr>
     <tr>
-    <th>reservationID</th>
+    <th>iD</th>
+    <th>cid</th>
+    <th>flightnum</th>
+    <th>number_first_class</th>
+    <th>num_economy</th>
+    <th>date_made</th>
     </tr>
     
     <%
@@ -32,6 +37,11 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
         %>
             <tr style='font-size: large;'>
             <td><%= row.get("id") %></td>
+            <td><%= row.get("cid") %></td>
+            <td><%= row.get("flightnum") %></td>
+            <td><%= row.get("number_first_class") %></td>
+            <td><%= row.get("num_economy") %></td>
+            <td><%= row.get("date_made") %></td>
             </tr>
     
     <% } } %>
