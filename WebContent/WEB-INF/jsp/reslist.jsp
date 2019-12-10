@@ -11,7 +11,7 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
    </head>
    <body>
    <form action="./reslist" method="post">
-   <input type = "number" name="flight number">
+   <input type = "number" name="flightNumber">
    <br/>
    <br/>
    <input type = "text" name="name">
@@ -24,6 +24,7 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
     <tr>
     <th>iD</th>
     <th>cid</th>
+    <th>username</th>
     <th>flightnum</th>
     <th>number_first_class</th>
     <th>num_economy</th>
@@ -38,8 +39,9 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
             <tr style='font-size: large;'>
             <td><%= row.get("id") %></td>
             <td><%= row.get("cid") %></td>
+            <td><%= row.get("username") %></td>
             <td><%= row.get("flightnum") %></td>
-            <td><%= row.get("number_first_class") %></td>
+            <td><%= row.get("num_first_class") %></td>
             <td><%= row.get("num_economy") %></td>
             <td><%= row.get("date_made") %></td>
             </tr>

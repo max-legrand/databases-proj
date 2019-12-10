@@ -24,6 +24,11 @@ if (type.equals("admin")){
 
 <a href="./admintools"><button>admin tools</button></a>
 <a href="./salesreport"><button>sales report</button></a>
+<a href="./reslist"><button>reservation list</button></a>
+<a href="./revgen"><button>revenue generated</button></a>
+<a href="./customerrev"><button>customer revenue</button></a>
+<a href="./allflights"><button>all flights</button></a>
+<a href="./ticketssold"><button>tickets sold</button></a>
 <%
 }
 else if (type.equals("rep")){

@@ -1753,16 +1753,17 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
                 statement = connection.createStatement();
                 if(name.equals("NONE")){
                     //For finding reservations by flightID
-                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users WHERE reservations.flightnum ="+flightNumber);
+                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users on reservations.cid = users.id WHERE reservations.flightnum ="+flightNumber+" group by reservations.id");
                 } 
                 else {
                     //For finding reservations based off of customer name
-                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users WHERE users.username ="+name);
+                    rs = statement.executeQuery("SELECT *  FROM reservations JOIN users on reservations.cid = users.id WHERE users.username ='"+name+"' group by reservations.id");
                 }
                 rs.beforeFirst();
                 ArrayList rows = multiAL(rs);
                 connection.close();
-                ModelAndView model =  new ModelAndView("reslist");
+                ModelAndView model =  new ModelAndView("reslist", "rs", rows);
+                // ModelAndView model =  new ModelAndView("redirect:index");
                 return model;
             }
             ModelAndView model =  new ModelAndView("reslist");
