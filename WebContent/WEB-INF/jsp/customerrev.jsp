@@ -20,24 +20,32 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
     <%
     if (rs != null){
        String maxName = "";
-       int maxRev = 0;
+       float maxRev = 0;
        for(int i = 0; i < rs.size(); i++) { 
         Dictionary row = (Hashtable)rs.get(i);
         %>
-            <tr style='font-size: large;'>
+           <%-- <tr> --%>
+            <%
             int numfirst = Integer.valueOf((String) row.get("num_first_class"));
             int farefirst = Integer.valueOf((String) row.get("fare_first"));
             int numecon = Integer.valueOf((String) row.get("num_economy"));
             int fareecon = Integer.valueOf((String) row.get("fare_econ"));
-            int total = numfirst*farefirst + numecon*fareecon;
+            float total = numfirst*farefirst + numecon*fareecon;
             if(total > maxRev){
-               maxName = row.get("username");
+               maxName = row.get("username").toString();
                maxRev = total;
             }
-            </tr>
+            %>
+            <%-- <td><%= row.get("username").toString() %> </td>
+            <td><%= total %> </td> --%>
+            
     
-    <% } <td><%= maxName %></td>
-    <td><%= maxRev %></td>} %>
+    <% } %> 
+     <tr style='font-size: large;'>
+     <td><%= maxName %></td>
+    <td><%= maxRev %></td> 
+    </tr>
+    <% } %>
     
     </table>
    </body>

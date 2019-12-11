@@ -30,6 +30,7 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
     <%
     if (rs != null){
        float total = 0;
+       float value = 0;
        for(int i = 0; i < rs.size(); i++) { 
         Dictionary row = (Hashtable)rs.get(i);
         %>
@@ -39,15 +40,17 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
             int farefirst = Integer.valueOf((String) row.get("fare_first"));
             int numecon = Integer.valueOf((String) row.get("num_economy"));
             int fareecon = Integer.valueOf((String) row.get("fare_econ"));
-            int = numfirst*farefirst + numecon*fareecon;
+            value = numfirst*farefirst + numecon*fareecon;
+            total = total + value;
             %>
             <td>
+            <%= value %>
             </td>
             </tr>
     
-    <% } 
+    <% } %>
     <td><%= total %></td>
-   } %>
+<% } %>
     
     </table>
    </body>

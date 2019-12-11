@@ -1780,7 +1780,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         String userid = (String)session.getAttribute("ID");
         if(isadmin(userid)){
             if(!flight.equals("NONE") || !airline.equals("NONE") || !customer.equals("NONE")){
-                Connection connection = null;
+                Connection connection = null;   
                 Statement statement = null;
                 ResultSet rs = null;
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -1788,20 +1788,20 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
                 statement = connection.createStatement();
                 //For flight
                 if(!flight.equals("NONE") && customer.equals("NONE") && airline.equals("NONE")){
-                    rs = statement.executeQuery("SELECT * FROM flights JOIN reservations WHERE reservations.flightnum = flights.number AND flights.number ="+flight);
+                    rs = statement.executeQuery("SELECT * FROM flights JOIN reservations WHERE reservations.flightnum = flights.number AND flights.number =\""+flight+"\"");
                 } 
                 //For customer
                 else if(flight.equals("NONE") && !customer.equals("NONE") && airline.equals("NONE")){
-                    rs = statement.executeQuery("SELECT * FROM (reservations JOIN users ON users.username = "+customer+" AND users.id = reservations.cid) JOIN flights WHERE reservations.flightnum = flights.number;");
+                    rs = statement.executeQuery("SELECT * FROM (reservations JOIN users ON users.username = \""+customer+"\" AND users.id = reservations.cid) JOIN flights WHERE reservations.flightnum = flights.number;");
                 }
                 //For airline
                 else{
-                    rs = statement.executeQuery("SELECT * FROM (aircrafts JOIN flights ON aircrafts.id = flights.aircraft) JOIN reservations WHERE reservations.flightnum = flights.number AND aircrafts.airline = "+airline);
+                    rs = statement.executeQuery("SELECT * FROM (aircrafts JOIN flights ON aircrafts.id = flights.aircraft) JOIN reservations WHERE reservations.flightnum = flights.number AND aircrafts.airline = \""+airline+"\"");
                 }
                 rs.beforeFirst();
                 ArrayList rows = multiAL(rs);
                 connection.close();
-                ModelAndView model =  new ModelAndView("revgen");
+                ModelAndView model =  new ModelAndView("revgen", "rs", rows);
                 return model;
             }
             ModelAndView model =  new ModelAndView("revgen");
@@ -1826,7 +1826,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
             rs.beforeFirst();
             ArrayList rows = multiAL(rs);
             connection.close();
-            ModelAndView model =  new ModelAndView("customerrev");
+            ModelAndView model =  new ModelAndView("customerrev", "rs", rows);
             return model;
         }
         ModelAndView model =  new ModelAndView("index");
@@ -1853,7 +1853,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
             return model;
         }
         ModelAndView model =  new ModelAndView("index");
-        return model;
+        return model;   
     }
     //Peter Marchese
     @RequestMapping("/allflights")
