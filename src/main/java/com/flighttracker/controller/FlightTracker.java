@@ -1844,8 +1844,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
             statement = connection.createStatement();
-            /////////////////////////////////////////////////
-            rs = statement.executeQuery("");
+            rs = statement.executeQuery("SELECT * FROM reservations");
             rs.beforeFirst();
             ArrayList rows = multiAL(rs);
             connection.close();
