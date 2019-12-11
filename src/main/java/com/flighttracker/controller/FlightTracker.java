@@ -1803,7 +1803,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
                 rs.beforeFirst();
                 ArrayList rows = multiAL(rs);
                 connection.close();
-                ModelAndView model =  new ModelAndView("reslist");
+                ModelAndView model =  new ModelAndView("revgen");
                 return model;
             }
             ModelAndView model =  new ModelAndView("revgen");
