@@ -1,0 +1,45 @@
+<%-- Nithi Kumar/Gianna Cortes --%>
+
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<% 
+ArrayList rs = (ArrayList)request.getAttribute("rs");
+%>
+
+<html>
+   <head>
+      <title>Cancel Reservation</title>
+   </head>
+   <body>
+   <form action="./reslist" method="post">
+   <h3>flight number:</h3>
+   <input type = "number" name="flightNumber">
+   <br/>
+   <br/>
+   <input type = "submit" name = "submit" value = "cancel reservation">
+   </form>
+      
+   <table style="width: 65%; ">
+    
+
+    
+    <%
+    if (rs != null){
+       for(int i = 0; i < rs.size(); i++) { 
+        Dictionary row = (Hashtable)rs.get(i);
+        %>
+            <tr style='font-size: large;'>
+            <td><%= row.remove("id") %></td>
+            <td><%= row.remove("cid") %></td>
+            <td><%= row.remove("username") %></td>
+            <td><%= row.remove("flightnum") %></td>
+            <td><%= row.remove("num_first_class") %></td>
+            <td><%= row.remove("num_economy") %></td>
+            <td><%= row.remove("date_made") %></td>
+            </tr>
+    
+    <% } } %>
+    
+    </table>
+   </body>
+   </html>
+   

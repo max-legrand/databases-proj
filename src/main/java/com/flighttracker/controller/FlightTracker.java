@@ -338,6 +338,29 @@ public class FlightTracker {
             return false;
         }
     }
+	
+    //Gianna Cortes
+    // determine if account is user
+    public boolean isuser(String userid) throws SQLException, FileNotFoundException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+        String connectionURL = geturl();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+        statement = connection.createStatement();
+        rs = statement.executeQuery("select * from users where id=\""+userid+"\"");
+        rs.last();
+        int rows = rs.getRow();
+        rs.first();
+        if (rs.getString("type").equals("user")){
+            connection.close();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     //MAX LEGRAND
     // routes to admintools jsp
@@ -1887,5 +1910,102 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
         ModelAndView model = new ModelAndView("testpage");
         return model;
     }
+	
+    //Gianna Cortes
+    //let customers make flight reservations
+    @RequestMapping("/userreserve")
+    public ModelAndView userreserve(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isuser(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+
+                rs = statement.executeQuery("select * from reservations");
+                rs.beforeFirst();
+                ArrayList Rows = multiAL(rs);
+                connection.close();
+                ModelAndView model = new ModelAndView("userreserve", "rs", Rows);
+                return model;
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+    }
+    
+    //Gianna Cortes
+    //Search for flights
+    @RequestMapping("/searchflights")
+    public ModelAndView searchflights(@RequestParam(name = "name", required = false, defaultValue = "NONE") String date, @RequestParam(name = "flightNumber", required = false, defaultValue = "NONE") String flightType, HttpSession session)throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+        String connectionURL = geturl();
+        String userid = (String)session.getAttribute("ID");
+        if(isadmin(userid)){
+            if(!date.equals("NONE") || !flightType.equals("NONE")){
+                Connection connection = null;
+                Statement statement = null;
+                ResultSet rs = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                if(date.equals("NONE")){
+                    rs = statement.executeQuery("SELECT *  FROM flights WHERE flights.type ="+flightType);
+                } 
+                else {
+                	//search by date
+                    rs = statement.executeQuery("SELECT *  FROM flights WHERE date.date ='"+date);
+                }
+                rs.beforeFirst();
+                ArrayList rows = multiAL(rs);
+                connection.close();
+                ModelAndView model =  new ModelAndView("searchflights", "rs", rows);
+                // ModelAndView model =  new ModelAndView("redirect:index");
+                return model;
+            }
+            ModelAndView model =  new ModelAndView("searchflights");
+            return model;
+        }
+        ModelAndView model =  new ModelAndView("index");
+        return model;
+    }
+	
+    //Nithi Kumar/Gianna Cortes
+    // delete user from admin page logistics
+    @RequestMapping("/cancelflight")
+    public ModelAndView cancelflight(@RequestParam("deleteid") String delid, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, UnknownHostException, SocketException, FileNotFoundException, IOException{
+    String connectionURL = geturl();
+    String userid = (String)session.getAttribute("ID");
+    if (userid != null){
+            if (isadmin(userid)){
+                Connection connection = null;
+                Statement statement = null;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                connection = DriverManager.getConnection(connectionURL, getuser(),getpass());
+                statement = connection.createStatement();
+                statement.executeUpdate("delete from reservations where id=\""+delid+"\"");
+                connection.close();
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+            }
+                
+                
+                ModelAndView model =  new ModelAndView("redirect:/");
+                return model;
+        }
+
+    
+    ModelAndView model =  new ModelAndView("index");
+    return model;
+} 
 
 }
