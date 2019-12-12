@@ -1848,7 +1848,7 @@ public ModelAndView waitinglist(@RequestParam("number") String flightnum, HttpSe
             rs.beforeFirst();
             ArrayList rows = multiAL(rs);
             connection.close();
-            ModelAndView model =  new ModelAndView("ticketssold");
+            ModelAndView model =  new ModelAndView("ticketssold", "rs", rows);
             return model;
         }
         ModelAndView model =  new ModelAndView("index");

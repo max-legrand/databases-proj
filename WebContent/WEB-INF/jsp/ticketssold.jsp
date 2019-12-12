@@ -18,14 +18,20 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
     </tr>
     
     <%
-    HashMap<String, Integer> map = new HashMap<>();
+    Map<String, Integer> map = new HashMap<>();
     if (rs != null){
        for(int i = 0; i < rs.size(); i++) { 
         Dictionary row = (Hashtable)rs.get(i);
-        if(map.containsKey("rows.get("fligthnum")){
-            map.put(rows.get("flightnum"), Integer.valueOf((String) map.get("rows.get("flightnum"))+1 );
+        int numfirst = Integer.valueOf((String) row.get("num_first_class"));
+        int numecon = Integer.valueOf((String) row.get("num_economy"));
+        int tickets = numfirst + numecon;
+        if (map.isEmpty()){
+           map.put(row.get("flightnum").toString(), tickets);
+        }
+        else if(map.containsKey(row.get("flightnum").toString())){
+            map.put(row.get("flightnum").toString(), map.get(row.get("flightnum").toString())+tickets );
         } else {
-            map.put(rows.get("flightnum"), 1);
+            map.put(row.get("flightnum").toString(), tickets);
         }
       
        } 

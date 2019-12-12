@@ -18,17 +18,37 @@ ArrayList rs = (ArrayList)request.getAttribute("rs");
     </tr>
     
     <%
+    Map<String, Integer> map = new HashMap<>();
     if (rs != null){
        for(int i = 0; i < rs.size(); i++) { 
         Dictionary row = (Hashtable)rs.get(i);
-        %>
-            <tr style='font-size: large;'>
-            <td><%= row.get("Flight") %></td>
-            <%-- Fix this --%>
-            <td><%= row.get("revenue") %></td>
-            </tr>
-    
-    <% } } %>
+        int numfirst = Integer.valueOf((String) row.get("num_first_class"));
+        int numecon = Integer.valueOf((String) row.get("num_economy"));
+        int tickets = numfirst + numecon;
+        if (map.isEmpty()){
+           map.put(row.get("flightnum").toString(), tickets);
+        }
+        else if(map.containsKey(row.get("flightnum").toString())){
+            map.put(row.get("flightnum").toString(), map.get(row.get("flightnum").toString())+tickets );
+        } else {
+            map.put(row.get("flightnum").toString(), tickets);
+        }
+      
+       } 
+    }
+    int max = 0;
+    String flightMax = "";
+    for(Map.Entry<String, Integer> entry : map.entrySet()){
+      if(entry.getValue() > max){
+         max = entry.getValue();
+         flightMax = entry.getKey();
+      }
+    }
+    %>
+      <tr style='font-size: large;'>
+      <td><%= flightMax %></td>
+      <td><%= max %></td>
+      </tr>
     
     </table>
    </body>
